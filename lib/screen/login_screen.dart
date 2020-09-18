@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -15,8 +14,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _passwordVisible = false;
   bool _autoValidate = false;
- // final FirebaseAuth _firebaseAuth= FirebaseAuth.instance;
- // final GoogleSignIn googleSignIn = GoogleSignIn();
+  // final FirebaseAuth _firebaseAuth= FirebaseAuth.instance;
+  // final GoogleSignIn googleSignIn = GoogleSignIn();
 
   /*void signInFacebook() async {
     FacebookLogin facebookLogin = FacebookLogin();
@@ -230,15 +229,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                     disabledColor: Colors.blueGrey,
                                     shape: StadiumBorder(),
                                     padding: EdgeInsets.all(0),
-                                    onPressed: () => {
-                                          // if(_formKey.currentState.validate()){}
-                                        },
+                                    onPressed: () {
+                                      // if(_formKey.currentState.validate()){}
+                                    },
                                     textColor: Colors.white,
                                     color: Color(0xFF03d7f0),
                                     //disabledColor: btnEnabled == false ? Colors.blueGrey : null,
                                     child: Builder(
                                         builder: (context) => InkWell(
-                                              onTap: () async {},
+                                              onTap: () async {
+                                                BlocProvider.of<
+                                                            AuthenticationBloc>(
+                                                        context)
+                                                    .add(LoggedIn());
+                                              },
                                               child: Container(
                                                 width: _width / 3,
                                                 decoration: BoxDecoration(
@@ -309,12 +313,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-
-
                             GestureDetector(
-                              onTap: (){
-                               // signInGoogle();
-                                BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
+                              onTap: () {
+                                // signInGoogle();
+                                BlocProvider.of<AuthenticationBloc>(context)
+                                    .add(LoggedIn());
                               },
                               child: Container(
                                 width: 40,
@@ -336,7 +339,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               width: 30,
                             ),
                             GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 // signInFacebook();
                                 // BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
                               },
@@ -363,9 +366,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 20,),
-                        Divider(thickness: 1,height: 0,),
-                        SizedBox(height: 15,),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Divider(
+                          thickness: 1,
+                          height: 0,
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
                         _buildSignupBtn()
                       ],
                     ),

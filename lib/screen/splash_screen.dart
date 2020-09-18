@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   Image mainLogo;
   bool isLoaded = false;
   bool hasInternet;
@@ -24,18 +24,21 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 //  bool get wantKeepAlive => true;
   @override
   void initState() {
-
     initConnectivity();
     _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen((connectionResult){
-          if (connectionResult == ConnectivityResult.wifi) {
-            setState(() {
-              hasInternet=true;
-              isChecking=true;
-            });
-          Timer(Duration(seconds: 5), () => Navigator.pushNamed(context, welcomeRoute));
-          }
+        _connectivity.onConnectivityChanged.listen((connectionResult) {
+      if (connectionResult == ConnectivityResult.wifi) {
+        setState(() {
+          hasInternet = true;
+          isChecking = true;
         });
+        Timer(
+          Duration(seconds: 5),
+          () => Navigator.of(context)
+              .pushNamedAndRemoveUntil(welcomeRoute, (_) => false),
+        );
+      }
+    });
     super.initState();
   }
 
@@ -44,28 +47,30 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     super.dispose();
   }
 
-
-
   Future<void> initConnectivity() async {
     var connectivityResult = await _connectivity.checkConnectivity();
-    if (connectivityResult == ConnectivityResult.wifi || connectivityResult== ConnectivityResult.mobile) {
-       Timer(Duration(seconds: 5), () => Navigator.pushNamed(context, welcomeRoute));
-    }
-    else if (connectivityResult == ConnectivityResult.none) {
-      Timer(Duration(seconds: 3),(){
+    if (connectivityResult == ConnectivityResult.wifi ||
+        connectivityResult == ConnectivityResult.mobile) {
+      Timer(
+        Duration(seconds: 5),
+        () => Navigator.of(context)
+            .pushNamedAndRemoveUntil(welcomeRoute, (_) => false),
+      );
+    } else if (connectivityResult == ConnectivityResult.none) {
+      Timer(Duration(seconds: 3), () {
         setState(() {
-          hasInternet=false;
+          hasInternet = false;
         });
-      } );
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async{
+      onWillPop: () async {
         await SystemNavigator.pop();
-        return  true;
+        return true;
       },
       child: Scaffold(
         body: Stack(
@@ -98,16 +103,18 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-
                         Container(
                             padding: EdgeInsets.all(0.0),
                             margin: EdgeInsets.all(0.0),
-                            width:100,
+                            width: 100,
                             height: 150,
                             child: ColorFiltered(
-                                colorFilter: ColorFilter.mode(Colors.lightBlue, BlendMode.modulate),
+                                colorFilter: ColorFilter.mode(
+                                    Colors.lightBlue, BlendMode.modulate),
                                 child: mainLogo)),
-                        SizedBox(height: 0,),
+                        SizedBox(
+                          height: 0,
+                        ),
                         Padding(
                           padding: EdgeInsets.only(top: 0),
                           child: Text(
@@ -123,10 +130,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   ),
                   Expanded(
                       flex: 3,
-                      child:  Center(child: hasInternet==false ?
-                      Container():
-                      CircularProgressIndicator(
-                        backgroundColor: Colors.white,))),
+                      child: Center(
+                          child: hasInternet == false
+                              ? Container()
+                              : CircularProgressIndicator(
+                                  backgroundColor: Colors.white,
+                                ))),
                 ],
               ),
             )
@@ -134,64 +143,60 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         ),
         bottomSheet: hasInternet == false
             ? BottomSheet(
-            animationController: _BottomSheetcontroller,
-            elevation: 1,
-            enableDrag: false,
-            onClosing: () {},
-            builder: (_) {
-              return Container(
-                height: 40,
-                width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('No internet connection'),
-                      InkWell(
-                        onTap: () {
-                          checkInternet();
-                        },
-                        child: Text('RETRY'),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            })
-            : isChecking == true
-            ? BottomSheet(
-            animationController:_BottomSheetcontroller ,
-            enableDrag: false,
-            onClosing: () {},
-            builder: (_) {
-              return Container(
-                  height: 40,
-                  width: MediaQuery.of(context).size.width,
-                  child: Padding(
-                    padding:  EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                    child: Text(
-                        'Connecting ...'
+                animationController: _BottomSheetcontroller,
+                elevation: 1,
+                enableDrag: false,
+                onClosing: () {},
+                builder: (_) {
+                  return Container(
+                    height: 40,
+                    width: MediaQuery.of(context).size.width,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('No internet connection'),
+                          InkWell(
+                            onTap: () {
+                              checkInternet();
+                            },
+                            child: Text('RETRY'),
+                          )
+                        ],
+                      ),
                     ),
-                  )
-              );
-            })
-            : null,
-      ) ,
+                  );
+                })
+            : isChecking == true
+                ? BottomSheet(
+                    animationController: _BottomSheetcontroller,
+                    enableDrag: false,
+                    onClosing: () {},
+                    builder: (_) {
+                      return Container(
+                          height: 40,
+                          width: MediaQuery.of(context).size.width,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            child: Text('Connecting ...'),
+                          ));
+                    })
+                : null,
+      ),
     );
   }
-
 
   void checkInternet() {
     setState(() {
       hasInternet = null;
     });
-    Timer(Duration(milliseconds: 400),(){
+    Timer(Duration(milliseconds: 400), () {
       setState(() {
         isChecking = true;
       });
     });
-
 
     Timer(Duration(seconds: 4), () {
       setState(() {
@@ -199,7 +204,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       });
     });
 
-    Timer(Duration(seconds: 4,milliseconds: 500), () {
+    Timer(Duration(seconds: 4, milliseconds: 500), () {
       setState(() {
         hasInternet = false;
       });
