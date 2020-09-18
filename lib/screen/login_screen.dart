@@ -4,10 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:http/http.dart' as http;
-import 'package:google_sign_in/google_sign_in.dart';
+
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -18,10 +15,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _passwordVisible = false;
   bool _autoValidate = false;
-  final FirebaseAuth _firebaseAuth= FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
+ // final FirebaseAuth _firebaseAuth= FirebaseAuth.instance;
+ // final GoogleSignIn googleSignIn = GoogleSignIn();
 
-  void signInFacebook() async {
+  /*void signInFacebook() async {
     FacebookLogin facebookLogin = FacebookLogin();
 
     final result = await facebookLogin.logIn(['email']);
@@ -78,6 +75,8 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushNamed(context, homeRoute);
     }
   }
+
+*/
 
   @override
   Widget build(BuildContext context) {
@@ -310,9 +309,36 @@ class _LoginScreenState extends State<LoginScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
+
+
                             GestureDetector(
                               onTap: (){
-                                signInFacebook();
+                               // signInGoogle();
+                                BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
+                              },
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffff4645),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    FontAwesomeIcons.google,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 30,
+                            ),
+                            GestureDetector(
+                              onTap: (){
+                                // signInFacebook();
+                                // BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
                               },
                               child: Container(
                                 width: 40,
@@ -329,30 +355,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: Center(
                                   child: Icon(
                                     FontAwesomeIcons.facebookF,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 30,
-                            ),
-                            GestureDetector(
-                              onTap: (){
-                               // signInGoogle();
-                                BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
-                              },
-                              child: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffff4645),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    FontAwesomeIcons.google,
                                     color: Colors.white,
                                     size: 20,
                                   ),
