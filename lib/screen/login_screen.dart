@@ -1,6 +1,8 @@
+import 'package:bekloh_user/bloc/authbloc/authentication.dart';
 import 'package:bekloh_user/utilities/constants.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -338,7 +340,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             GestureDetector(
                               onTap: (){
-                                signInGoogle();
+                               // signInGoogle();
+                                BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
                               },
                               child: Container(
                                 width: 40,

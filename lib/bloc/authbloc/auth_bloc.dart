@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import  'package:bekloh_user/bloc/authbloc/auth_event.dart';
 import  'package:bekloh_user/bloc/authbloc/auth_state.dart';
@@ -16,32 +18,24 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     if (event is AppStarted) {
       yield* _mapAppStartedToState();
     } else if (event is LoggedIn) {
-      yield* _mapLoggedInToState();
+      yield Authenticated('dd');
     } else if (event is LoggedOut) {
       yield* _mapLoggedOutToState();
     }
   }
 
   Stream<AuthenticationState> _mapAppStartedToState() async* {
-    try {
-      final isSignedIn = await _userRepository.isSignedIn();
-      if(isSignedIn) {
-        final name = await _userRepository.getUser();
-        yield Authenticated(name);
-      } else {
-        yield Unauthenticated();
-      }
-    } catch (_) {
-      yield Unauthenticated();
-    }
+   yield Uninitialized();
   }
 
   Stream<AuthenticationState> _mapLoggedInToState() async* {
-    yield Authenticated(await _userRepository.getUser());
+  //  print('hello');
+    yield Authenticated("hello");
+
   }
 
   Stream<AuthenticationState> _mapLoggedOutToState() async* {
     yield Unauthenticated();
-    _userRepository.signOut();
+    //_userRepository.signOut();
   }
 }

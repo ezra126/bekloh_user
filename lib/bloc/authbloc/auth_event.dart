@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-@immutable
+//@immutable
 abstract class AuthenticationEvent extends Equatable {
   AuthenticationEvent();
   @override
@@ -18,9 +18,11 @@ class AppStarted extends AuthenticationEvent {
 class LoggedIn extends AuthenticationEvent {
   @override
   String toString() => 'LoggedIn';
+
 }
 
 class LoggedOut extends AuthenticationEvent {
   @override
   String toString() => 'LoggedOut';
+
 }

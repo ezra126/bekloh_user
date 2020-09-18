@@ -3,6 +3,7 @@ import 'package:bekloh_user/utilities/constants.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -23,6 +24,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 //  bool get wantKeepAlive => true;
   @override
   void initState() {
+
     initConnectivity();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen((connectionResult){
