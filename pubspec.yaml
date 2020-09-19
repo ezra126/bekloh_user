@@ -40,6 +40,7 @@ dependencies:
   bloc: ^6.0.3
   equatable: ^1.2.5
   meta: ^1.1.8
+  google_maps_flutter: ^0.5.32
 
 
 

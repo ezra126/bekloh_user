@@ -1,5 +1,6 @@
 import 'package:bekloh_user/bloc/authbloc/authentication.dart';
 import 'package:bekloh_user/bloc/authbloc/auth_bloc.dart';
+import 'package:bekloh_user/bloc/deliverybloc/delivery_booking_bloc.dart';
 import 'package:bekloh_user/bloc/simple_bloc_delegate.dart';
 import 'package:bekloh_user/router/app_router.dart';
 import 'package:bekloh_user/screen/home_screen.dart';
@@ -16,7 +17,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main(){
   Bloc.observer = SimpleBlocDelegate();
-  runApp(MyApp());
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider<DeliveryBookingBloc>(
+      create: (BuildContext context) => DeliveryBookingBloc(),
+    ),
+    BlocProvider<AuthenticationBloc>(
+      create: (BuildContext context) => AuthenticationBloc(userRepository: UserRepository())
+      ..add(AppStarted())
+      ,
+      
+    ),
+  ],
+      child: MyApp())
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -25,13 +38,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final UserRepository _userRepository = UserRepository();
-  AuthenticationBloc _authenticationBloc;
   @override
   void initState() {
     super.initState();
-    _authenticationBloc = AuthenticationBloc(userRepository: _userRepository);
-    _authenticationBloc.add(AppStarted());
   }
 
   @override
@@ -41,35 +50,28 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (BuildContext context) => _authenticationBloc,
-      child: Builder(
-        builder: (BuildContext context){
-         return  MaterialApp(
-            debugShowCheckedModeBanner: false,
-            //initialRoute:  BlocProvider.of<AuthenticationBloc>(context) == Uninitialized ? splashscreenRoute : loginScreenRoute,
-            // initialRoute: registerRoute,
-           onGenerateRoute: Router.generateRoute,
-           home:  BlocBuilder(
-           cubit: _authenticationBloc,
-           builder: (context, state) {
-             if (state is Authenticated) {
-               return HomeScreen();
-             }
-             else if (state is Uninitialized) {
-               return SplashScreen();
-             }
-             else if (state is Unauthenticated) {
-               return WelcomeScreen();
-             }
-             return Container();
-           },
-         ),
-          );
-        },
+    return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          //initialRoute:  BlocProvider.of<AuthenticationBloc>(context) == Uninitialized ? splashscreenRoute : loginScreenRoute,
+         initialRoute: homeRoute,
+         onGenerateRoute: Router.generateRoute,
+        /* home:  BlocBuilder(
+         cubit: _authenticationBloc,
+         builder: (context, state) {
+           if (state is Authenticated) {
+             return HomeScreen();
+           }
+           else if (state is Uninitialized) {
+             return SplashScreen();
+           }
+           else if (state is Unauthenticated) {
+             return WelcomeScreen();
+           }
+           return Container();
+         },
+       ),*/
+        );
 
-      )
-    );
   }
   @override
   void dispose() {

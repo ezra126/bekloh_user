@@ -13,8 +13,6 @@ class Uninitialized extends AuthenticationState {
   @override
   String toString() => 'Uninitialized';
 
-
-
 }
 
 class Authenticated extends AuthenticationState {
