@@ -1,4 +1,5 @@
 import 'package:bekloh_user/bloc/authbloc/auth_bloc.dart';
+import 'package:bekloh_user/bloc/authbloc/auth_state.dart';
 import 'package:bekloh_user/bloc/loginbloc/login_bloc.dart';
 import 'package:bekloh_user/bloc/loginbloc/login_event.dart';
 import 'package:bekloh_user/bloc/loginbloc/login_state.dart';
@@ -36,11 +37,20 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
+       // print(state);
         if (state.isFailure) {
           Scaffold.of(context)
             ..hideCurrentSnackBar()
@@ -74,9 +84,7 @@ class _LoginFormState extends State<LoginForm> {
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
-          cubit: BlocProvider.of<LoginBloc>(context),
           builder: (BuildContext context, LoginState state) {
-            print(state);
             return Stack(
               children: [
                 Container(
@@ -154,6 +162,9 @@ class _LoginFormState extends State<LoginForm> {
                                   ),
                                   autovalidate: true,
                                   autocorrect: false,
+                                  validator: (_) {
+                                    return !state.isEmailValid ? 'Invalid Email' : null;
+                                  },
                                   keyboardType: TextInputType.emailAddress,
                                   style: new TextStyle(
                                     fontFamily: "Poppins",
@@ -193,9 +204,7 @@ class _LoginFormState extends State<LoginForm> {
                                   autovalidate: true,
                                   autocorrect: false,
                                   validator: (_) {
-                                    return !state.isPasswordValid
-                                        ? 'Invalid Password'
-                                        : null;
+                                    return !state.isPasswordValid ? 'Invalid Email' : null;
                                   },
                                   keyboardType: TextInputType.emailAddress,
                                   style: new TextStyle(
@@ -214,7 +223,9 @@ class _LoginFormState extends State<LoginForm> {
                                   disabledColor: Colors.blueGrey,
                                   shape: StadiumBorder(),
                                   padding: EdgeInsets.all(0),
-                                  onPressed: () => {print(state)},
+                                  onPressed: isLoginButtonEnabled(state)
+                                      ? _onFormSubmitted
+                                      : null,
                                   textColor: Colors.white,
                                   color: Color(0xFF03d7f0),
                                   //disabledColor: btnEnabled == false ? Colors.blueGrey : null,
@@ -293,6 +304,7 @@ class _LoginFormState extends State<LoginForm> {
                             onTap: () {
                               // signInGoogle();
                               // BlocProvider.of<AuthenticationCubit>(context).loggedIn();
+                              BlocProvider.of<LoginBloc>(context).add(LoginWithGooglePressed());
                             },
                             child: Container(
                               width: 40,
@@ -317,7 +329,9 @@ class _LoginFormState extends State<LoginForm> {
                             onTap: () {
                               // signInFacebook();
                               // BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
-                              BlocProvider.of<LoginBloc>(context).add(LoginWithGooglePressed());
+                             // BlocProvider.of<LoginBloc>(context).add(LoginWithGooglePressed());
+                             // print('uuuu');
+                              BlocProvider.of<AuthenticationCubit>(context).loggedIn();
                             },
                             child: Container(
                               width: 40,
@@ -432,21 +446,4 @@ class _LoginFormState extends State<LoginForm> {
   }
 }
 
-class LoginButton extends StatelessWidget {
-  final VoidCallback _onPressed;
 
-  LoginButton({Key key, VoidCallback onPressed})
-      : _onPressed = onPressed,
-        super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return RaisedButton(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
-      ),
-      onPressed: _onPressed,
-      child: Text('Login'),
-    );
-  }
-}

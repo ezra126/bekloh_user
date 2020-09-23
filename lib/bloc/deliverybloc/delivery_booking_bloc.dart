@@ -8,7 +8,8 @@ class DeliveryBookingBloc extends Bloc<DeliveryBookingEvent, DeliveryBookingStat
 
   @override
   Stream<DeliveryBookingState> mapEventToState(DeliveryBookingEvent event) {
-    if(event is DeliveryBookingStartEvent){}
+    if(event is DeliveryBookingStartEvent){
+    }
     if(event is DestinationSelectedEvent){}
     if(event is  DetailsSubmittedEvent){}
     if(event is DeliveryVechileSelectedEvent){}

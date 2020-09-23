@@ -33,13 +33,17 @@ class _DeliveryMapState extends State<DeliveryMap> {
   //location = Location();
  // initialLocation();
   location.onLocationChanged.listen((LocationData cLoc) {
+    if(this.mounted) {
       setState(() {
         currentLocation = cLoc;
       });
+    }
      // LatLng latLng = LatLng(currentLocation.latitude, currentLocation.longitude);
   });
     super.initState();
   }
+
+
 
   void initialLocation() async{
    await location.getLocation().then((LocationData initialLoc)  {
@@ -74,9 +78,11 @@ class _DeliveryMapState extends State<DeliveryMap> {
           myLocationButtonEnabled: false,
           initialCameraPosition: currentCameraPosition,
           onMapCreated: (GoogleMapController controller) async{
-            setState(() {
-              mapController = controller;
-            });
+            if(mounted){
+              setState(() {
+                mapController = controller;
+              });
+            }
           }
 
       ),),
@@ -130,5 +136,12 @@ class _DeliveryMapState extends State<DeliveryMap> {
       }
       //location = null;
     }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    mapController.dispose();
+    super.dispose();
   }
 }

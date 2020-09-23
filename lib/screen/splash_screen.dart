@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   void initState() {
 
     initConnectivity();
-    _connectivitySubscription =
+  /*  _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen((connectionResult){
           if (connectionResult == ConnectivityResult.wifi) {
             setState(() {
@@ -37,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             BlocProvider.of<AuthenticationCubit>(context).appStarted();
         // Timer(Duration(seconds: 5), () => Navigator.pushNamed(context, welcomeRoute));
           }
-        });
+        });*/
     super.initState();
   }
 
@@ -52,16 +52,19 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     var connectivityResult = await _connectivity.checkConnectivity();
     if (connectivityResult == ConnectivityResult.wifi || connectivityResult== ConnectivityResult.mobile) {
 
-       Timer(Duration(seconds: 3), () {
+       Timer(Duration(seconds: 4), () {
          BlocProvider.of<AuthenticationCubit>(context).appStarted();
          //Navigator.pushNamed(context, welcomeRoute);
        });
     }
     else if (connectivityResult == ConnectivityResult.none) {
       Timer(Duration(seconds: 3),(){
-        setState(() {
-          hasInternet=false;
-        });
+        if(mounted) {
+          setState(() {
+            hasInternet = false;
+          });
+        }
+
       } );
     }
   }
@@ -189,26 +192,37 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
 
   void checkInternet() {
-    setState(() {
-      hasInternet = null;
-    });
-    Timer(Duration(milliseconds: 400),(){
+    if(mounted){
       setState(() {
-        isChecking = true;
+        hasInternet = null;
       });
+    }
+
+    Timer(Duration(milliseconds: 400),(){
+      if(mounted){
+        setState(() {
+          isChecking = true;
+        });
+      }
+
     });
 
 
     Timer(Duration(seconds: 4), () {
-      setState(() {
-        isChecking = false;
-      });
+      if(mounted){
+        setState(() {
+          isChecking = false;
+        });
+      }
     });
 
     Timer(Duration(seconds: 4,milliseconds: 500), () {
-      setState(() {
-        hasInternet = false;
-      });
+      if(mounted){
+        setState(() {
+          hasInternet = false;
+        });
+      }
+
     });
   }
 }

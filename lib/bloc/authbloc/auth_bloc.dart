@@ -29,8 +29,13 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       emit(Unauthenticated());
     }
   }
-  void loggedIn() => emit(_mapLoggedInToState());
-  void loggedOut() => emit( _mapLoggedOutToState());
+  void loggedIn() {
+    emit(Authenticated('hello'));
+  }
+  void loggedOut() {
+    emit(Unauthenticated());
+    _userRepository.signOut();
+  }
 
 
  /* @override
@@ -45,7 +50,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   }
 */
   Stream<AuthenticationState> _mapAppStartedToState() async* {
-    //  print('hhhhhhhhhhhhhhhhhhhhh');
      try {
        final isSignedIn = await _userRepository.isSignedIn();
        if (isSignedIn) {
@@ -62,15 +66,16 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
 
    _mapLoggedInToState() async* {
     // print('hello');
-     yield Authenticated('hf');
+     emit(Authenticated('hf'));
 
   }
 
    _mapLoggedOutToState() async* {
-    print('hello hfhfhfhffh');
     yield Unauthenticated();
     _userRepository.signOut();
   }
+
+
 }
 
 /*

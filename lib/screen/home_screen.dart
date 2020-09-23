@@ -23,10 +23,9 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  Completer<GoogleMapController> _completer = Completer();
+ // Completer<GoogleMapController> _completer = Completer();
   LatLng _center = LatLng(-8.913025, 13.202462);
   final _textcontroller = TextEditingController();
-  MapBloc _mapBloc;
 
   Completer<GoogleMapController> _controller = Completer();
 
@@ -46,9 +45,9 @@ class HomeScreenState extends State<HomeScreen> {
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
-    _mapBloc=MapBloc();
    // BlocProvider.of<AuthenticationCubit>(context).loggedOut();
   }
+
 
     @override
     Widget build(BuildContext context) {
@@ -71,7 +70,8 @@ class HomeScreenState extends State<HomeScreen> {
                 body: Stack(
                   children: [
                     DeliveryMap(),
-                    (state is MapLoadedState) ? Padding(
+                    (state is MapLoadedState) ?
+                    Padding(
                       padding: EdgeInsets.only(top: 80, left: 20, right: 20),
                       child: Container(
                         height: 50,
@@ -105,7 +105,8 @@ class HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ): Container(height: 0,),
-                    (state is MapLoadedState) ? Positioned(
+                    (state is MapLoadedState) ?
+                    Positioned(
                       left: 0,
                       top: 0,
                       right: 0,
@@ -116,7 +117,8 @@ class HomeScreenState extends State<HomeScreen> {
                             elevation: 0.0,
                             leading: FlatButton(
                               onPressed: () {
-                                _scaffoldKey.currentState.openDrawer();
+                                BlocProvider.of<AuthenticationCubit>(context).loggedOut();
+                                //_scaffoldKey.currentState.openDrawer();
                               },
                               child: Icon(
                                 Icons.menu,
@@ -135,15 +137,11 @@ class HomeScreenState extends State<HomeScreen> {
                    builder: (BuildContext context, DeliveryBookingState state) {
                      if (state is DeliveryBookingNotInitializedState) {
                        return Container(height: 100,
-                       child:  Positioned(
-                         bottom: MediaQuery.of(context).size.height/10,
-                         child: RaisedButton(
-                           onPressed: (){
-
-                             BlocProvider.of<AuthenticationCubit>(context).loggedOut();
-                           },
-                           child: Text('Log out'),
-                         ),
+                       child:  RaisedButton(
+                         onPressed: () async{
+                           BlocProvider.of<AuthenticationCubit>(context).loggedOut();
+                         },
+                         child: Text('Log out'),
                        ),);
                      }
                      return Container(height: 100,);
@@ -156,4 +154,11 @@ class HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
+
+  @override
+  void dispose() {
+
+    _textcontroller.dispose();
+    super.dispose();
+  }
   }

@@ -75,7 +75,8 @@ class _MyAppState extends State<MyApp> {
              return SplashScreen();
            }
            else if (state is Unauthenticated) {
-             return WelcomeScreen();
+             //Navigator.of(context).pushNamedAndRemoveUntil(welcomeRoute, (Route<dynamic> route) => false);
+            return WelcomeScreen();
            }
            return Container();
          },
@@ -85,7 +86,8 @@ class _MyAppState extends State<MyApp> {
   }
   @override
   void dispose() {
-    // _authenticationBloc.close();
+
     super.dispose();
   }
+
 }

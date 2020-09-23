@@ -3,7 +3,6 @@ import 'package:bekloh_user/bloc/authbloc/auth_state.dart';
 import 'package:bekloh_user/bloc/loginbloc/login_event.dart';
 import 'package:bekloh_user/bloc/loginbloc/login_state.dart';
 import 'package:bloc/bloc.dart';
-//import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:bekloh_user/screen/login_screen.dart';
@@ -17,12 +16,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc({
     @required UserRepository userRepository,
   })  : assert(userRepository != null),
-        _userRepository = userRepository, super(null);
+        _userRepository = userRepository, super(LoginState.empty());
 
   LoginState get initialState => LoginState.empty();
 
 
-  get currentState => null;
+ // get currentState => LoginState;
 
   @override
   Stream<Transition<LoginEvent, LoginState>> transformEvents (
@@ -47,7 +46,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } else if (event is PasswordChanged) {
       yield* _mapPasswordChangedToState(event.password);
     } else if (event is LoginWithGooglePressed) {
-      yield* _mapLoginWithGooglePressedToState();
+      try {
+       // print('login sucesssssssssss');
+        await _userRepository.signInWithGoogle();
+        yield LoginState.success();
+
+      } catch (_) {
+        yield LoginState.failure();
+      }
+     // yield* _mapLoginWithGooglePressedToState();
     } else if (event is LoginWithCredentialsPressed) {
       yield* _mapLoginWithCredentialsPressedToState(
         email: event.email,
@@ -58,19 +65,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   Stream<LoginState> _mapEmailChangedToState(String email) async* {
 
-    yield currentState.update(
+    yield state.update(
       isEmailValid: Validators.isValidEmail(email),
     );
   }
 
   Stream<LoginState> _mapPasswordChangedToState(String password) async* {
-    yield  currentState.update(
+    yield  state.update(
       isPasswordValid: Validators.isValidPassword(password),
     );
   }
 
   Stream<LoginState> _mapLoginWithGooglePressedToState() async* {
+    //print()
     try {
+      print('login sucesssssssssss');
       await _userRepository.signInWithGoogle();
       yield LoginState.success();
 
