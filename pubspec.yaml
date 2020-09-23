@@ -41,6 +41,10 @@ dependencies:
   equatable: ^1.2.5
   meta: ^1.1.8
   google_maps_flutter: ^0.5.32
+  geolocator: ^6.0.0+4
+  location: ^3.0.2
+  uuid: ^2.2.2
+  rxdart: ^0.24.1
 
 
 

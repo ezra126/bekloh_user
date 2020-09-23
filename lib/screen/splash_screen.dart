@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bekloh_user/bloc/authbloc/auth_bloc.dart';
 import 'package:bekloh_user/utilities/constants.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               hasInternet=true;
               isChecking=true;
             });
-          Timer(Duration(seconds: 5), () => Navigator.pushNamed(context, welcomeRoute));
+            BlocProvider.of<AuthenticationCubit>(context).appStarted();
+        // Timer(Duration(seconds: 5), () => Navigator.pushNamed(context, welcomeRoute));
           }
         });
     super.initState();
@@ -49,7 +51,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Future<void> initConnectivity() async {
     var connectivityResult = await _connectivity.checkConnectivity();
     if (connectivityResult == ConnectivityResult.wifi || connectivityResult== ConnectivityResult.mobile) {
-       Timer(Duration(seconds: 5), () => Navigator.pushNamed(context, welcomeRoute));
+
+       Timer(Duration(seconds: 3), () {
+         BlocProvider.of<AuthenticationCubit>(context).appStarted();
+         //Navigator.pushNamed(context, welcomeRoute);
+       });
     }
     else if (connectivityResult == ConnectivityResult.none) {
       Timer(Duration(seconds: 3),(){

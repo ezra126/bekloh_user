@@ -1,5 +1,6 @@
 import 'package:bekloh_user/bloc/authbloc/authentication.dart';
 import 'package:bekloh_user/bloc/authbloc/auth_bloc.dart';
+import 'package:bekloh_user/bloc/loginbloc/login_bloc.dart';
 import 'package:bekloh_user/bloc/deliverybloc/delivery_booking_bloc.dart';
 import 'package:bekloh_user/bloc/simple_bloc_delegate.dart';
 import 'package:bekloh_user/router/app_router.dart';
@@ -13,19 +14,29 @@ import 'package:bekloh_user/utilities/constants.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'bloc/map_bloc.dart';
+
 
 
 void main(){
+  UserRepository _userRepository=UserRepository();
   Bloc.observer = SimpleBlocDelegate();
   runApp(MultiBlocProvider(providers: [
     BlocProvider<DeliveryBookingBloc>(
       create: (BuildContext context) => DeliveryBookingBloc(),
     ),
-    BlocProvider<AuthenticationBloc>(
+    /*BlocProvider<AuthenticationBloc>(
       create: (BuildContext context) => AuthenticationBloc(userRepository: UserRepository())
-      ..add(AppStarted())
-      ,
-      
+      ..add(AppStarted()),
+    ),*/
+    BlocProvider<AuthenticationCubit>(
+      create: (BuildContext context) => AuthenticationCubit(userRepository: _userRepository),
+    ),
+    BlocProvider<LoginBloc>(
+      create: (BuildContext context) => LoginBloc(userRepository: _userRepository),
+    ),
+    BlocProvider<MapBloc>(
+        create: (BuildContext context) => MapBloc()
     ),
   ],
       child: MyApp())
@@ -53,10 +64,9 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
           debugShowCheckedModeBanner: false,
           //initialRoute:  BlocProvider.of<AuthenticationBloc>(context) == Uninitialized ? splashscreenRoute : loginScreenRoute,
-         initialRoute: homeRoute,
+       //  initialRoute: homeRoute,
          onGenerateRoute: Router.generateRoute,
-        /* home:  BlocBuilder(
-         cubit: _authenticationBloc,
+         home:  BlocBuilder<AuthenticationCubit,AuthenticationState>(
          builder: (context, state) {
            if (state is Authenticated) {
              return HomeScreen();
@@ -69,7 +79,7 @@ class _MyAppState extends State<MyApp> {
            }
            return Container();
          },
-       ),*/
+       ),
         );
 
   }

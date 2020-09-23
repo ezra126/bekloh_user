@@ -50,6 +50,13 @@ class UserRepository {
     }
   }
 
+  Future<void> signInWithCredentials(String email, String password) {
+    return _firebaseAuth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  }
+
   Future<bool> isSignedIn() async {
     final currentUser = await _firebaseAuth.currentUser();
     return currentUser != null;
