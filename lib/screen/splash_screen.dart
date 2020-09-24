@@ -52,8 +52,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     var connectivityResult = await _connectivity.checkConnectivity();
     if (connectivityResult == ConnectivityResult.wifi || connectivityResult== ConnectivityResult.mobile) {
 
-       Timer(Duration(seconds: 4), () {
+       Timer(Duration(seconds: 3), () {
          BlocProvider.of<AuthenticationCubit>(context).appStarted();
+
          //Navigator.pushNamed(context, welcomeRoute);
        });
     }

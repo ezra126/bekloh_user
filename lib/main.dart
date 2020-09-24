@@ -44,11 +44,14 @@ void main(){
 }
 
 class MyApp extends StatefulWidget {
+
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+   NavigatorState get _navigator => _navigatorKey.currentState;
   @override
   void initState() {
     super.initState();
@@ -61,26 +64,33 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
           debugShowCheckedModeBanner: false,
+          navigatorKey: _navigatorKey,
           //initialRoute:  BlocProvider.of<AuthenticationBloc>(context) == Uninitialized ? splashscreenRoute : loginScreenRoute,
-       //  initialRoute: homeRoute,
+         initialRoute: splashscreenRoute,
          onGenerateRoute: Router.generateRoute,
-         home:  BlocBuilder<AuthenticationCubit,AuthenticationState>(
-         builder: (context, state) {
-           if (state is Authenticated) {
-             return HomeScreen();
-           }
-           else if (state is Uninitialized) {
-             return SplashScreen();
-           }
-           else if (state is Unauthenticated) {
-             //Navigator.of(context).pushNamedAndRemoveUntil(welcomeRoute, (Route<dynamic> route) => false);
-            return WelcomeScreen();
-           }
-           return Container();
-         },
-       ),
+         builder: (context,widget){
+          return BlocListener<AuthenticationCubit,AuthenticationState>(
+             listener: (context, state) {
+               if (state is Authenticated) {
+                 _navigator.pushNamedAndRemoveUntil(homeRoute, (Route<dynamic> route) => false);
+                 // return HomeScreen();
+               }
+               else if (state is Uninitialized) {
+                  _navigator.pushNamedAndRemoveUntil(welcomeRoute, (Route<dynamic> route) => false);
+                 //return WelcomeScreen();
+               }
+               else if (state is Unauthenticated) {
+                 _navigator.pushNamedAndRemoveUntil(welcomeRoute, (Route<dynamic> route) => false);
+                 // return WelcomeScreen();
+               }
+               //return Container();
+             },
+             child: widget,
+           );
+         } ,
         );
 
   }
@@ -91,3 +101,5 @@ class _MyAppState extends State<MyApp> {
   }
 
 }
+
+

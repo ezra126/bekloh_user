@@ -1,4 +1,7 @@
+import 'package:bekloh_user/bloc/authbloc/auth_bloc.dart';
+import 'package:bekloh_user/utilities/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeDrawer extends StatefulWidget {
   HomeDrawer({Key key}) : super(key: key);
@@ -117,7 +120,8 @@ class MainDrawer extends StatelessWidget {
         GestureDetector(
             onTap: (){
               Navigator.pop(context);
-             // Navigator.pushNamed(context,ProfileRoute);
+             // print('ezi new');
+              Navigator.pushNamed(context,profileRoute);
             },
             child: CustomListTile(frontIcon: Icons.person,
                 text: ('My Profile'))),
@@ -148,17 +152,27 @@ class MainDrawer extends StatelessWidget {
         InkWell(
           onTap: (){
             Navigator.pop(context);
-            //Navigator.pushNamed(context,SettingRoute);
+            Navigator.pushNamed(context,settingRoute);
           },
-          child: CustomListTile(frontIcon: Icons.notifications,
+          child: CustomListTile(frontIcon: Icons.settings,
               text: ('Setting')),
         ),
         Divider(color: Colors.black45,height: 4,),
-        CustomListTile(frontIcon: Icons.help_outline,
-            text: ('Support')),
+        InkWell(
+          onTap: (){
+
+          },
+          child: CustomListTile(frontIcon: Icons.help_outline,
+              text: ('Support')),
+        ),
         Divider(color: Colors.black45,height: 4,),
-        CustomListTile(frontIcon: Icons.exit_to_app,
-            text: ('Log Out')),
+        InkWell(
+          onTap: (){
+            BlocProvider.of<AuthenticationCubit>(context).loggedOut();
+          },
+          child: CustomListTile(frontIcon: Icons.exit_to_app,
+              text: ('Log Out')),
+        ),
         Divider(color: Colors.black45,height: 4,),
 
 

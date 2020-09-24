@@ -117,8 +117,8 @@ class HomeScreenState extends State<HomeScreen> {
                             elevation: 0.0,
                             leading: FlatButton(
                               onPressed: () {
-                                BlocProvider.of<AuthenticationCubit>(context).loggedOut();
-                                //_scaffoldKey.currentState.openDrawer();
+                               // BlocProvider.of<AuthenticationCubit>(context).loggedOut();
+                                _scaffoldKey.currentState.openDrawer();
                               },
                               child: Icon(
                                 Icons.menu,
