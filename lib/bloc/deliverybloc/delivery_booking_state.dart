@@ -8,9 +8,9 @@ abstract class DeliveryBookingState extends Equatable{
   List<Object> get props => [];
 }
 
-class DeliveryMapLoading extends DeliveryBookingState{}
 
-class DeliveryServiceTypeNotInitialized extends DeliveryBookingState{}
+
+
 
 class DeliveryBookingNotInitializedState extends DeliveryBookingState {
   DeliveryBookingNotInitializedState();
@@ -19,18 +19,23 @@ class DeliveryBookingNotSelectedState extends DeliveryBookingState {
   DeliveryBookingNotSelectedState();
 }
 
+class DestinationNotSelectedState extends DeliveryBookingState {
+  DestinationNotSelectedState();
+
+}
+
 class DetailsNotFilledState extends DeliveryBookingState {}
 
-class DeliveryNotSelectedState extends DeliveryBookingState {}
+class DeliveryVechileTypeNotSelectedState extends DeliveryBookingState {}
 
-class DeliveryNotConfirmedState extends DeliveryBookingState {}
+class PaymentMethodNotSelectedState extends DeliveryBookingState {}
 
-class PaymentNotInitializedState extends DeliveryBookingState {}
+class DeliveryBookingConfirmedState extends DeliveryBookingState {}
 
-class DeliveryConfirmedState extends DeliveryBookingState {}
+class DeliveryBookingNotConfirmedState extends DeliveryBookingState {}
 
 class DeliveryBookingCancelledState extends DeliveryBookingState {}
 
 class DeliveryBookingLoadingState extends DeliveryBookingState {}
 
-class DeliveryBookingConfirmedState extends DeliveryBookingState {}
+

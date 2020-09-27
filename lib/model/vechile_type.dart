@@ -1,0 +1,1 @@
+enum VechileType { Standard, Premium, Platinum }

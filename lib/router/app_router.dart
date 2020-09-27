@@ -1,3 +1,4 @@
+import 'package:bekloh_user/screen/delivery_item_detail.dart';
 import 'package:bekloh_user/screen/home_screen.dart';
 import 'package:bekloh_user/screen/login_screen.dart';
 import 'package:bekloh_user/screen/profile_screen.dart';
@@ -28,6 +29,8 @@ class Router {
         return MaterialPageRoute(builder: (_) =>  ProfileScreen());
       case settingRoute:
         return MaterialPageRoute(builder: (_) =>  SettingScreen());
+      case PackageDetailRoute:
+        return MaterialPageRoute(builder: (_) =>  PackageDetailScreen());
 
       default:
         return MaterialPageRoute(

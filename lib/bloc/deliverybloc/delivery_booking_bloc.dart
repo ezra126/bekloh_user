@@ -7,14 +7,19 @@ class DeliveryBookingBloc extends Bloc<DeliveryBookingEvent, DeliveryBookingStat
 
 
   @override
-  Stream<DeliveryBookingState> mapEventToState(DeliveryBookingEvent event) {
+  Stream<DeliveryBookingState> mapEventToState(DeliveryBookingEvent event) async* {
     if(event is DeliveryBookingStartEvent){
+       yield DeliveryBookingNotInitializedState();
     }
-    if(event is DestinationSelectedEvent){}
+    if(event is DestinationSelectedEvent){
+      yield DestinationNotSelectedState();
+    }
     if(event is  DetailsSubmittedEvent){}
     if(event is DeliveryVechileSelectedEvent){}
     if(event is SelectPaymentMethodEvent){}
-    if(event is BackPressedEvent){}
+    if(event is BackPressedEvent){
+      yield DeliveryBookingNotInitializedState();
+    }
   }
 
 }

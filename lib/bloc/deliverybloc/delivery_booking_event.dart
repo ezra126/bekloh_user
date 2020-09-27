@@ -7,9 +7,6 @@ abstract class DeliveryBookingEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class DeliveryMapInitalizingEvent extends DeliveryBookingEvent{}
-
-class DeliveryServiceTypeBookingEvent extends DeliveryBookingEvent{}
 
 class DeliveryBookingStartEvent extends DeliveryBookingEvent {}
 

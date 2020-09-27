@@ -45,7 +45,12 @@ dependencies:
   location: ^3.0.2
   uuid: ^2.2.2
   rxdart: ^0.24.1
-
+  image_cropper: ^1.2.3
+  image_picker: ^0.6.7+4
+  path: ^1.7.0
+  firebase_storage: ^3.1.6
+  google_maps_webservice: ^0.0.18
+  flutter_google_places: ^0.2.6
 
 
 dev_dependencies:
@@ -64,8 +69,10 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/logos/map-pin.png
+    - assets/logos/map-pinn.png
+    - assets/logos/mypin.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -18,6 +18,7 @@ class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
   bool _passwordVisible = false;
   bool _autoValidate = false;
+  bool isInvalid=false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -180,8 +181,11 @@ class _LoginFormState extends State<LoginForm> {
                                   controller: _passwordController,
                                   obscureText: _passwordVisible ? false : true,
                                   decoration: InputDecoration(
+                                   // counterText: '    ',
+                                   // contentPadding: EdgeInsets.all(20),
                                     labelText: "Password",
                                     fillColor: Colors.white,
+                                    errorStyle: TextStyle(fontSize: 10),
                                     suffixIcon: IconButton(
                                       icon: Icon(
                                         _passwordVisible
@@ -204,6 +208,16 @@ class _LoginFormState extends State<LoginForm> {
                                   autovalidate: true,
                                   autocorrect: false,
                                   validator: (_) {
+                                    if(!state.isPasswordValid==true){
+                                   WidgetsBinding.instance.addPostFrameCallback((_){
+                                   setState(() {
+                                     isInvalid=true;
+                                   });
+                                   print(isInvalid);
+                                 });
+
+                                    }
+
                                     return !state.isPasswordValid ? 'Invalid Email' : null;
                                   },
                                   keyboardType: TextInputType.emailAddress,
@@ -328,10 +342,11 @@ class _LoginFormState extends State<LoginForm> {
                           GestureDetector(
                             onTap: () {
                               // signInFacebook();
+                              BlocProvider.of<LoginBloc>(context).add(LoginWithFaceBook());
                               // BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
                              // BlocProvider.of<LoginBloc>(context).add(LoginWithGooglePressed());
                              // print('uuuu');
-                              BlocProvider.of<AuthenticationCubit>(context).loggedIn();
+                              //BlocProvider.of<AuthenticationCubit>(context).loggedIn();
                             },
                             child: Container(
                               width: 40,

@@ -3,12 +3,12 @@ import 'package:bekloh_user/bloc/authbloc/auth_state.dart';
 import 'package:bekloh_user/bloc/loginbloc/login_event.dart';
 import 'package:bekloh_user/bloc/loginbloc/login_state.dart';
 import 'package:bloc/bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:bekloh_user/screen/login_screen.dart';
 import 'package:bekloh_user/services/auth_service.dart';
 import 'package:bekloh_user/bloc/loginbloc/validators.dart';
-
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   UserRepository _userRepository;
@@ -16,18 +16,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc({
     @required UserRepository userRepository,
   })  : assert(userRepository != null),
-        _userRepository = userRepository, super(LoginState.empty());
+        _userRepository = userRepository,
+        super(LoginState.empty());
 
   LoginState get initialState => LoginState.empty();
 
-
- // get currentState => LoginState;
+  // get currentState => LoginState;
 
   @override
-  Stream<Transition<LoginEvent, LoginState>> transformEvents (
-      Stream<LoginEvent> events,
-       next,
-      ) {
+  Stream<Transition<LoginEvent, LoginState>> transformEvents(
+    Stream<LoginEvent> events,
+    next,
+  ) {
     final observableStream = events;
     final nonDebounceStream = observableStream.where((event) {
       return (event is! EmailChanged && event is! PasswordChanged);
@@ -35,9 +35,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     final debounceStream = observableStream.where((event) {
       return (event is EmailChanged || event is PasswordChanged);
     }).debounceTime(Duration(milliseconds: 300));
-    return super.transformEvents(nonDebounceStream.mergeWith([debounceStream]),next,);
+    return super.transformEvents(
+      nonDebounceStream.mergeWith([debounceStream]),
+      next,
+    );
   }
-
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
@@ -45,16 +47,23 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield* _mapEmailChangedToState(event.email);
     } else if (event is PasswordChanged) {
       yield* _mapPasswordChangedToState(event.password);
-    } else if (event is LoginWithGooglePressed) {
+    } else if (event is LoginWithFaceBook) {
       try {
-       // print('login sucesssssssssss');
-        await _userRepository.signInWithGoogle();
-        yield LoginState.success();
-
+        FirebaseUser user= await _userRepository.signInWithFacebook();
+        if(user!=null) yield LoginState.success();
+        else yield LoginState.failure();
       } catch (_) {
         yield LoginState.failure();
       }
-     // yield* _mapLoginWithGooglePressedToState();
+    } else if (event is LoginWithGooglePressed) {
+      try {
+        // print('login sucesssssssssss');
+        await _userRepository.signInWithGoogle();
+        yield LoginState.success();
+      } catch (_) {
+        yield LoginState.failure();
+      }
+      // yield* _mapLoginWithGooglePressedToState();
     } else if (event is LoginWithCredentialsPressed) {
       yield* _mapLoginWithCredentialsPressedToState(
         email: event.email,
@@ -64,14 +73,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   Stream<LoginState> _mapEmailChangedToState(String email) async* {
-
     yield state.update(
       isEmailValid: Validators.isValidEmail(email),
     );
   }
 
   Stream<LoginState> _mapPasswordChangedToState(String password) async* {
-    yield  state.update(
+    yield state.update(
       isPasswordValid: Validators.isValidPassword(password),
     );
   }
@@ -82,7 +90,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       print('login sucesssssssssss');
       await _userRepository.signInWithGoogle();
       yield LoginState.success();
-
     } catch (_) {
       yield LoginState.failure();
     }

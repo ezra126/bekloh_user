@@ -6,11 +6,14 @@ import 'package:http/http.dart' as http;
 class UserRepository {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
+  final FacebookLogin _facebookLogin;
   // FacebookLogin facebookLogin;
 
-  UserRepository({FirebaseAuth firebaseAuth, GoogleSignIn googleSignin})
+  UserRepository({FirebaseAuth firebaseAuth, GoogleSignIn googleSignin,FacebookLogin facebookLogin})
       : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _googleSignIn = googleSignin ?? GoogleSignIn();
+        _googleSignIn = googleSignin ?? GoogleSignIn(),
+       _facebookLogin =facebookLogin ?? FacebookLogin()
+  ;
 
   Future<FirebaseUser> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
@@ -25,7 +28,7 @@ class UserRepository {
   }
 
   Future<FirebaseUser> signInWithFacebook() async {
-    FacebookLogin facebookLogin = FacebookLogin();
+    FacebookLogin facebookLogin = _facebookLogin;
 
     final result = await facebookLogin.logIn(['email']);
 
@@ -62,14 +65,30 @@ class UserRepository {
     return currentUser != null;
   }
 
+  Future<bool> isSignOut() async {
+    final currentUser = await _firebaseAuth.currentUser();
+    print(currentUser);  print(currentUser); print('uuuuuuuuuu');
+    return currentUser==null;
+}
+
   Future<String> getUser() async {
     return (await _firebaseAuth.currentUser()).email;
+  }
+
+
+
+  Future<void> signUp({String email, String password}) async {
+    return await _firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
   }
 
   Future<void> signOut() async {
     return Future.wait([
       _firebaseAuth.signOut(),
       _googleSignIn.signOut(),
+      _facebookLogin.logOut()
     ]);
   }
 

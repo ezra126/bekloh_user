@@ -6,3 +6,4 @@ const String welcomeRoute= '/WelcomeScreen';
 const String supportRoute= '/SupportScreen';
 const String profileRoute= '/ProfileScreen';
 const String settingRoute= '/SettingScreen';
+const String PackageDetailRoute= '/PackageDatailScreen';

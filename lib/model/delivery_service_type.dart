@@ -1,0 +1,1 @@
+enum DeliveryServiceType { LargePackageService, SmallPackageService  }

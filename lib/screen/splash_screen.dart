@@ -27,17 +27,21 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   void initState() {
 
     initConnectivity();
-  /*  _connectivitySubscription =
+    _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen((connectionResult){
-          if (connectionResult == ConnectivityResult.wifi) {
+          if (connectionResult == ConnectivityResult.wifi || connectionResult == ConnectivityResult.mobile ) {
             setState(() {
               hasInternet=true;
               isChecking=true;
             });
-            BlocProvider.of<AuthenticationCubit>(context).appStarted();
+
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+          //    BlocProvider.of<AuthenticationCubit>(context).appStarted();
+            }
+            );
         // Timer(Duration(seconds: 5), () => Navigator.pushNamed(context, welcomeRoute));
           }
-        });*/
+        });
     super.initState();
   }
 
@@ -54,7 +58,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
        Timer(Duration(seconds: 3), () {
          BlocProvider.of<AuthenticationCubit>(context).appStarted();
-
          //Navigator.pushNamed(context, welcomeRoute);
        });
     }

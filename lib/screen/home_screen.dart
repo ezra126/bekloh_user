@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bekloh_user/component/home_drawer.dart';
 import 'package:bekloh_user/component/delivery_map.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:uuid/uuid.dart';
 
 
@@ -48,108 +49,137 @@ class HomeScreenState extends State<HomeScreen> {
    // BlocProvider.of<AuthenticationCubit>(context).loggedOut();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Timer(Duration(seconds: 2),(){
+     // BlocProvider.of<MapBloc>(context).mapLoaded();
+    });
+
+  }
+
 
     @override
     Widget build(BuildContext context) {
 
+
       return WillPopScope(
         onWillPop:() async{
-          BlocProvider.of<DeliveryBookingBloc>(context).add(BackPressedEvent());
+         BlocProvider.of<DeliveryBookingBloc>(context).add(BackPressedEvent());
           return false;
         },
         child: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
-          child:  BlocBuilder<MapBloc, MapState>(
-           // cubit: _mapBloc ,
-            builder:  (context, state){
-             return Scaffold(
-                key: _scaffoldKey,
-                drawer: Drawer(
-                  child: MainDrawer(),
-                ),
-                body: Stack(
-                  children: [
-                    DeliveryMap(),
-                    (state is MapLoadedState) ?
-                    Padding(
-                      padding: EdgeInsets.only(top: 80, left: 20, right: 20),
-                      child: Container(
-                        height: 50,
-                        color: Colors.white,
-                        child:  TextField(
-                          readOnly: true,
-                          controller: _textcontroller,
-                          onTap: () async {
-                            // should show search screen here
-                            final sessionToken = Uuid().v4();
-                            showSearch(
-                              context: context,
-                              delegate: AddressSearch(sessionToken),
-                            );
+          child:  BlocBuilder<DeliveryBookingBloc, DeliveryBookingState>(
+             builder:  (BuildContext context, state){
+                 return Scaffold(
+                   key: _scaffoldKey,
+                   drawer: Drawer(
+                     child: MainDrawer(),
+                   ),
+                   body: Stack(
+                     children: [
+                       DeliveryMap(),
+                      //(state is MapLoadedState) ?
+                       (state is DeliveryBookingNotInitializedState) ?
+                       Padding(
+                         padding: EdgeInsets.only(top: 80, left: 20, right: 20),
+                         child: Container(
+                           height: 50,
+                           color: Colors.white,
+                           child:  TextField(
+                             readOnly: true,
+                             controller: _textcontroller,
+                             onTap: () async {
+                               // should show search screen here
+                               final sessionToken = Uuid().v4();
+                               showSearch(
+                                 context: context,
+                                 delegate: AddressSearch(sessionToken),
+                               );
 
-                          },
-                          decoration: InputDecoration(
-                            icon: Container(
-                              margin: EdgeInsets.only(right: 20),
-                              width: 10,
-                              height: 10,
-                              child: Icon(
-                                Icons.search,
-                                color: Colors.black,
-                              ),
-                            ),
-                            hintText: "Enter your shipping address",
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.only(left: 8.0, top: 16.0),
-                          ),
-                        ),
-                      ),
-                    ): Container(height: 0,),
-                    (state is MapLoadedState) ?
-                    Positioned(
-                      left: 0,
-                      top: 0,
-                      right: 0,
-                      child: Column(
-                        children: <Widget>[
-                          AppBar(
-                            backgroundColor: Colors.transparent,
-                            elevation: 0.0,
-                            leading: FlatButton(
-                              onPressed: () {
-                               // BlocProvider.of<AuthenticationCubit>(context).loggedOut();
-                                _scaffoldKey.currentState.openDrawer();
-                              },
-                              child: Icon(
-                                Icons.menu,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ):Container(),
+                             },
+                             decoration: InputDecoration(
+                               icon: Container(
+                                 margin: EdgeInsets.only(right: 20),
+                                 width: 10,
+                                 height: 10,
+                                 child: Icon(
+                                   Icons.search,
+                                   color: Colors.black,
+                                 ),
+                               ),
+                               hintText: "Enter your shipping address",
+                               border: InputBorder.none,
+                               contentPadding: EdgeInsets.only(left: 8.0, top: 16.0),
+                             ),
+                           ),
+                         ),
+                       )
+                        : Container(height: 0,)
+                       ,
+                    //  (state is MapLoadedState) ?
+                       (state is DeliveryBookingNotInitializedState) ?
+                       Positioned(
+                         left: 0,
+                         top: 0,
+                         right: 0,
+                         child: Column(
+                           children: <Widget>[
+                             AppBar(
+                               backgroundColor: Colors.transparent,
+                               elevation: 0.0,
+                               leading: FlatButton(
+                                 onPressed: () {
+                                   // BlocProvider.of<AuthenticationCubit>(context).loggedOut();
+                                   _scaffoldKey.currentState.openDrawer();
+                                 },
+                                 child: Icon(
+                                   Icons.menu,
+                                   color: Colors.black,
+                                 ),
+                               ),
+                             ),
+                           ],
+                         ),
+                       )
+                        :Container(),
 
-                  ],
-                ),
-               bottomSheet: (state is MapLoadedState) ?
-               BlocBuilder<DeliveryBookingBloc, DeliveryBookingState>(
-                   builder: (BuildContext context, DeliveryBookingState state) {
-                     if (state is DeliveryBookingNotInitializedState) {
-                       return Container(height: 100,
-                       child:  RaisedButton(
-                         onPressed: () async{
-                           BlocProvider.of<AuthenticationCubit>(context).loggedOut();
-                         },
-                         child: Text('Log out'),
-                       ),);
-                     }
-                     return Container(height: 100,);
-                   }): Container(height: 0),
+                     ],
+                   ),
+                   bottomSheet:
+                  //  (state is MapLoadedState) ?
+                    BlocBuilder<DeliveryBookingBloc, DeliveryBookingState>(
+                       builder: (BuildContext context, DeliveryBookingState state) {
+                         if (state is DeliveryBookingNotInitializedState) {
+                           return Container(height: 100,
+                             child:  RaisedButton(
+                               onPressed: () async{
+                                 final Connectivity _connectivity = Connectivity();
+                                 _connectivity.onConnectivityChanged.listen((connectionResult){
+                                   if (connectionResult == ConnectivityResult.wifi || connectionResult == ConnectivityResult.mobile ) {
+                                     BlocProvider.of<AuthenticationCubit>(context).loggedOut();
+                                     // Timer(Duration(seconds: 5), () => Navigator.pushNamed(context, welcomeRoute));
+                                   }
+                                 });
 
-              );
-            },
+                                 //  BlocProvider.of<AuthenticationCubit>(context).loggedOut();
+                               },
+                               child: Text('Log out'),
+                             ),);
+                         }
+                         if(state is DestinationNotSelectedState){
+                           Container(
+                             child: Center(child: Text('Add Location'),),
+                           );
+                         }
+                         return Container(height: 100,);
+                       })
+                       //  : Container(height: 0)
 
+
+                 );
+               }
           ),
         ),
       );
