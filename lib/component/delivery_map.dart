@@ -20,6 +20,7 @@ class DeliveryMap extends StatefulWidget {
 
 class _DeliveryMapState extends State<DeliveryMap> {
   GoogleMapController mapController;
+  GoogleMapController addDestinationController;
   LatLng _center = LatLng(9.005401, 38.763611);
   LocationData currentLocation;
   CameraPosition currentCameraPosition;
@@ -72,60 +73,57 @@ class _DeliveryMapState extends State<DeliveryMap> {
 
   void setCustomMapPin() async {
     pinLocationIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5),
-        'assets/logos/map-pin.png');
+        ImageConfiguration(devicePixelRatio: 2.5), 'assets/logos/map-pin.png');
   }
 
-  void addMarker() async{
+  void addMarker() async {
     pinLocationIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5,size: Size(100,100)),
+        ImageConfiguration(devicePixelRatio: 2.5, size: Size(100, 100)),
         'assets/logos/mypin.png');
 
-    markers.add(
-        Marker(
-            draggable: true,
-            markerId: MarkerId('initial'),
-            position: LatLng( currentLocation.latitude,currentLocation.longitude),
-            icon: pinLocationIcon,
-            onDragEnd: ((value) {
-              print(value.latitude);
-              print(value.longitude);
-            })
-        )
-    );
+    markers.add(Marker(
+        draggable: true,
+        markerId: MarkerId('initial'),
+        position: LatLng(currentLocation.latitude, currentLocation.longitude),
+        icon: pinLocationIcon,
+        onDragEnd: ((value) {
+          print(value.latitude);
+          print(value.longitude);
+        })));
   }
 
-
-  void _updatePosition(CameraPosition _position,String hey) {
+  void _updatePosition(CameraPosition _position, String hey) {
     print(hey);
     print(
         'inside updatePosition ${_position.target.latitude} ${_position.target.longitude}');
     Marker marker = markers.firstWhere(
-            (p) => p.markerId == MarkerId('marker_2'),
+        (p) => p.markerId == MarkerId('marker_2'),
         orElse: () => null);
-
-    markers.remove(marker);
-    markers.add(
-      Marker(
-        markerId: MarkerId('marker_2'),
-        position: LatLng(_position.target.latitude, _position.target.longitude),
-        draggable: true,
-        icon: pinLocationIcon,
-      ),
-    );
+    setState(() {
+      markers.remove(marker);
+      markers.add(
+        Marker(
+          markerId: MarkerId('marker_2'),
+          position:
+              LatLng(_position.target.latitude, _position.target.longitude),
+          draggable: true,
+          icon: pinLocationIcon,
+        ),
+      );
+    });
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     var initialCameraPosition =
-        CameraPosition(zoom: 8, target: LatLng( 9.005401, 38.763611));
+        CameraPosition(zoom: 8, target: LatLng(9.005401, 38.763611));
     /*
         // BlocProvider.of<MapBloc>(context).mapLoaded();
 */
     if (currentLocation != null) {
-      print('dhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhjjj');
-      BlocProvider.of<MapBloc>(context).mapLoaded();
+     // print('dhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhjjj');
+      // BlocProvider.of<MapBloc>(context).mapLoaded();
       initialCameraPosition = CameraPosition(
           zoom: 16,
           target: LatLng(currentLocation.latitude, currentLocation.longitude));
@@ -134,51 +132,19 @@ class _DeliveryMapState extends State<DeliveryMap> {
     return Scaffold(
       body: BlocListener<DeliveryBookingBloc, DeliveryBookingState>(
         listener: (BuildContext context, DeliveryBookingState state) {
-          if (state is DeliveryBookingNotInitializedState) {}
+          if (state is DeliveryBookingNotInitializedState) {
+            clearData();
+          }
           if (state is DestinationNotSelectedState) {
-             clearData();
+            clearData();
             addMarker();
-
           }
           if (state is DeliveryVechileTypeNotSelectedState) {}
           if (state is DeliveryBookingConfirmedState) {}
         },
         child: BlocBuilder<DeliveryBookingBloc, DeliveryBookingState>(
-          builder: (context,state){
-            if(state is DeliveryBookingNotInitializedState){
-              return GoogleMap(
-                  mapType:  MapType.normal,
-                  zoomControlsEnabled: false,
-                  zoomGesturesEnabled: true,
-                  scrollGesturesEnabled: true,
-                  compassEnabled: true,
-                  rotateGesturesEnabled: true,
-                  tiltGesturesEnabled: true,
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: false,
-                  gestureRecognizers: < Factory < OneSequenceGestureRecognizer >> [
-                    new Factory < OneSequenceGestureRecognizer > (
-                          () => new EagerGestureRecognizer(),
-                    ),
-                  ].toSet(),
-                  initialCameraPosition: initialCameraPosition,
-                  onMapCreated: (GoogleMapController controller) async {
-                    //BlocProvider.of<MapBloc>(context).mapLoaded();
-                    if (mounted) {
-                      setState(() {
-                        mapController = controller;
-
-                      });
-                    }
-                    await location.getLocation().then((LocationData initialLoc) {
-                      LatLng latLng = LatLng(initialLoc.latitude, initialLoc.longitude);
-                      CameraUpdate cameraUpdate = CameraUpdate.newLatLngZoom(latLng, 16);
-                      mapController.animateCamera(cameraUpdate);
-                    });
-
-                  });
-            }
-            if (state is DestinationNotSelectedState) {
+          builder: (context, state) {
+            if (state is DeliveryBookingNotInitializedState) {
               return GoogleMap(
                   mapType: MapType.normal,
                   zoomControlsEnabled: false,
@@ -190,13 +156,25 @@ class _DeliveryMapState extends State<DeliveryMap> {
                   myLocationEnabled: true,
                   myLocationButtonEnabled: false,
                   markers: markers,
-                  onCameraMove: ((_position) =>
-                      _updatePosition(_position, "ndfkjnkjdf")),
-                  gestureRecognizers: <Factory <OneSequenceGestureRecognizer>>[
-                    new Factory <OneSequenceGestureRecognizer> (
-                          () => new EagerGestureRecognizer(),
+                  // onCameraMove: state is DestinationNotSelectedState ?((_position) => _updatePosition(_position, "ndfkjnkjdf")) : null ,
+                  gestureRecognizers: Set()
+                    ..add(Factory<PanGestureRecognizer>(
+                        () => PanGestureRecognizer()))
+                    ..add(
+                      Factory<OneSequenceGestureRecognizer>(
+                        () => new EagerGestureRecognizer(),
+                      ),
+                    )
+                    ..add(Factory<ScaleGestureRecognizer>(
+                        () => ScaleGestureRecognizer()))
+                    ..add(Factory<TapGestureRecognizer>(
+                        () => TapGestureRecognizer()))
+                    ..add(Factory<VerticalDragGestureRecognizer>(
+                        () => VerticalDragGestureRecognizer())),
+                  /*  gestureRecognizers: < Factory < OneSequenceGestureRecognizer >> [
+                    new Factory < OneSequenceGestureRecognizer > (() => new EagerGestureRecognizer(),
                     ),
-                  ].toSet(),
+                  ].toSet(),*/
                   initialCameraPosition: initialCameraPosition,
                   onMapCreated: (GoogleMapController controller) async {
                     //BlocProvider.of<MapBloc>(context).mapLoaded();
@@ -205,14 +183,42 @@ class _DeliveryMapState extends State<DeliveryMap> {
                         mapController = controller;
                       });
                     }
-
+                    await location
+                        .getLocation()
+                        .then((LocationData initialLoc) {
+                      LatLng latLng =
+                          LatLng(initialLoc.latitude, initialLoc.longitude);
+                      CameraUpdate cameraUpdate =
+                          CameraUpdate.newLatLngZoom(latLng, 16);
+                      mapController.animateCamera(cameraUpdate);
+                    });
                   });
             }
-            return Container();
+            if (state is DestinationNotSelectedState) {
+              print('destinaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+              Container(
+                height: 40,
+                child: GoogleMap(
+                  mapType: MapType.normal,
+                  initialCameraPosition: CameraPosition(zoom: 8, target: LatLng(20.005401, 38.763611)),
+                  zoomControlsEnabled: false,
+                  zoomGesturesEnabled: true,
+                  scrollGesturesEnabled: true,
+                  compassEnabled: true,
+                  onMapCreated: (GoogleMapController controller) async {
+                    //BlocProvider.of<MapBloc>(context).mapLoaded();
+                    if (mounted) {
+                      setState(() {
+                        addDestinationController = controller;
+                      });
+                    }
+                  },
+                ),
+              );
+            }
+            return Container(color: Colors.lightBlue,);
           },
-
         ),
-
       ),
     );
   }
@@ -270,6 +276,7 @@ class _DeliveryMapState extends State<DeliveryMap> {
   void dispose() {
     // TODO: implement dispose
     mapController.dispose();
+    addDestinationController.dispose();
     super.dispose();
   }
 }
