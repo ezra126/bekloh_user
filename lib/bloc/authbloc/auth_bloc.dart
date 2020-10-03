@@ -35,7 +35,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   Future<void> loggedOut() async {
     await _userRepository.signOut();
     final isSignedOut = await _userRepository.isSignOut();
-    if(isSignedOut) emit(Unauthenticated());
+    if(isSignedOut)
+      emit(Unauthenticated());
   }
 
 

@@ -7,3 +7,5 @@ const String supportRoute= '/SupportScreen';
 const String profileRoute= '/ProfileScreen';
 const String settingRoute= '/SettingScreen';
 const String PackageDetailRoute= '/PackageDatailScreen';
+const String addDestinationRoute= '/AddDestinationScreen';
+const String chooseVechileAndPaymentRoute= '/ChooseVechileAndPaymentScreen';

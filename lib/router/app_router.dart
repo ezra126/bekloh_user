@@ -1,3 +1,5 @@
+import 'package:bekloh_user/screen/add_destination.dart';
+import 'package:bekloh_user/screen/choose_vechile_and_payment.dart';
 import 'package:bekloh_user/screen/delivery_item_detail.dart';
 import 'package:bekloh_user/screen/home_screen.dart';
 import 'package:bekloh_user/screen/login_screen.dart';
@@ -31,6 +33,10 @@ class Router {
         return MaterialPageRoute(builder: (_) =>  SettingScreen());
       case PackageDetailRoute:
         return MaterialPageRoute(builder: (_) =>  PackageDetailScreen());
+      case addDestinationRoute:
+        return MaterialPageRoute(builder: (_) =>  AddDestinationScreen());
+      case  chooseVechileAndPaymentRoute:
+        return MaterialPageRoute(builder: (_) =>  ChooseVechileAndPaymentScreen());
 
       default:
         return MaterialPageRoute(

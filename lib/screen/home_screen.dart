@@ -6,13 +6,18 @@ import 'package:bekloh_user/bloc/deliverybloc/delivery_booking_event.dart';
 import 'package:bekloh_user/bloc/deliverybloc/delivery_booking_state.dart';
 import 'package:bekloh_user/bloc/map_bloc.dart';
 import 'package:bekloh_user/component/address_search.dart';
+import 'package:bekloh_user/utilities/constants.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bekloh_user/component/home_drawer.dart';
 import 'package:bekloh_user/component/delivery_map.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:location/location.dart';
 import 'package:uuid/uuid.dart';
 
 
@@ -22,32 +27,37 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => HomeScreenState();
 }
 
-class HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
   final _scaffoldKey = GlobalKey<ScaffoldState>();
- // Completer<GoogleMapController> _completer = Completer();
-  LatLng _center = LatLng(-8.913025, 13.202462);
+  //LatLng _center = LatLng(-8.913025, 13.202462);
   final _textcontroller = TextEditingController();
-
-  Completer<GoogleMapController> _controller = Completer();
-
+  GoogleMapController mapController;
+  Location location ;
+  LocationData currentLocation;
+  LatLng currentPosition;
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
 
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
 
   @override
   void initState() {
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
-   // BlocProvider.of<AuthenticationCubit>(context).loggedOut();
-  }
+    location = Location();
+
+    //BlocProvider.of<DeliveryBookingBloc>(context).add(DeliveryBookingStartEvent());
+    location.onLocationChanged.listen((LocationData cLoc) {
+      currentLocation = cLoc;
+      currentPosition = LatLng(currentLocation.latitude, currentLocation.longitude);
+
+      if (currentPosition != null) {
+        BlocProvider.of<MapBloc>(context).mapLoaded();
+      }
+    });
+        }
 
   @override
   void didChangeDependencies() {
@@ -61,16 +71,14 @@ class HomeScreenState extends State<HomeScreen> {
 
     @override
     Widget build(BuildContext context) {
-
-
-      return WillPopScope(
+     return WillPopScope(
         onWillPop:() async{
-         BlocProvider.of<DeliveryBookingBloc>(context).add(BackPressedEvent());
+          BlocProvider.of<DeliveryBookingBloc>(context).add(BackPressedEvent());
           return false;
         },
         child: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
-          child:  BlocBuilder<DeliveryBookingBloc, DeliveryBookingState>(
+          child:  BlocBuilder<MapBloc, MapState>(
              builder:  (BuildContext context, state){
                  return Scaffold(
                    key: _scaffoldKey,
@@ -79,9 +87,109 @@ class HomeScreenState extends State<HomeScreen> {
                    ),
                    body: Stack(
                      children: [
-                       DeliveryMap(),
-                      //(state is MapLoadedState) ?
-                       (state is DeliveryBookingNotInitializedState) ?
+                       (state is MapOnLoadingState) ? Container(): Container(),
+                      // DeliveryMap(),
+                       BlocBuilder<DeliveryBookingBloc,DeliveryBookingState>(
+                           builder: (context,DeliveryBookingState state){
+                           /*  if(state is DeliveryBookingNotInitializedState){
+                               return  currentLocation==null ? Center(child: CircularProgressIndicator(),) : GoogleMap(
+                                   mapType: MapType.normal,
+                                   initialCameraPosition: CameraPosition(
+                                     target: currentPosition,
+                                     zoom: 16,
+                                   ),
+                                   zoomControlsEnabled: false,
+                                   zoomGesturesEnabled: true,
+                                   scrollGesturesEnabled: true,
+                                   compassEnabled: true,
+                                   rotateGesturesEnabled: true,
+                                   tiltGesturesEnabled: true,
+                                   myLocationEnabled: true,
+                                   myLocationButtonEnabled: false,
+                                   //markers: markers,
+                                   //onCameraMove: state is DeliveryBookingNotInitializedState ? null: ((_position) => _updatePosition(_position, "ndfkjnkjdf"))  ,
+                                   gestureRecognizers: Set()
+                                     ..add(Factory<PanGestureRecognizer>(
+                                             () => PanGestureRecognizer()))
+                                     ..add(
+                                       Factory<OneSequenceGestureRecognizer>(
+                                             () => new EagerGestureRecognizer(),
+                                       ),
+                                     )
+                                     ..add(Factory<ScaleGestureRecognizer>(
+                                             () => ScaleGestureRecognizer()))
+                                     ..add(Factory<TapGestureRecognizer>(
+                                             () => TapGestureRecognizer()))
+                                     ..add(Factory<VerticalDragGestureRecognizer>(
+                                             () => VerticalDragGestureRecognizer())),
+
+
+                                   onMapCreated: (GoogleMapController controller) async {
+                                     //BlocProvider.of<MapBloc>(context).mapLoaded();
+                                     if (mounted) {
+                                       setState(() {
+                                         mapController = controller;
+                                       });
+                                     }
+
+                                   });
+                             } */
+                             return currentPosition== null ?
+                             Center(child: SpinKitRipple(
+                               color: Colors.blue,
+                               size: 60.0,
+                               controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1200)),
+                             ))
+                                 : GoogleMap(
+                                 mapType: MapType.normal,
+                                 initialCameraPosition: CameraPosition(
+                                   target: currentPosition,
+                                   zoom: 16,
+                                 ),
+                                 zoomControlsEnabled: false,
+                                 zoomGesturesEnabled: true,
+                                 scrollGesturesEnabled: true,
+                                 compassEnabled: true,
+                                 rotateGesturesEnabled: true,
+                                 tiltGesturesEnabled: true,
+                                 myLocationEnabled: true,
+                                 myLocationButtonEnabled: false,
+                                 //markers: markers,
+                                 //onCameraMove: state is DeliveryBookingNotInitializedState ? null: ((_position) => _updatePosition(_position, "ndfkjnkjdf"))  ,
+                                 gestureRecognizers: Set()
+                                   ..add(Factory<PanGestureRecognizer>(
+                                           () => PanGestureRecognizer()))
+                                   ..add(
+                                     Factory<OneSequenceGestureRecognizer>(
+                                           () => new EagerGestureRecognizer(),
+                                     ),
+                                   )
+                                   ..add(Factory<ScaleGestureRecognizer>(
+                                           () => ScaleGestureRecognizer()))
+                                   ..add(Factory<TapGestureRecognizer>(
+                                           () => TapGestureRecognizer()))
+                                   ..add(Factory<VerticalDragGestureRecognizer>(
+                                           () => VerticalDragGestureRecognizer())),
+
+
+                                 onMapCreated: (GoogleMapController controller) async {
+                                   //BlocProvider.of<MapBloc>(context).mapLoaded();
+                                   if (mounted) {
+                                     setState(() {
+                                       mapController = controller;
+                                     });
+                                   }
+                                  // BlocProvider.of<MapBloc>(context).mapLoaded();
+                                 });
+
+                           }
+
+                       ),
+
+
+
+
+                       (state is MapLoadedState) ?
                        Padding(
                          padding: EdgeInsets.only(top: 80, left: 20, right: 20),
                          child: Container(
@@ -92,6 +200,11 @@ class HomeScreenState extends State<HomeScreen> {
                              controller: _textcontroller,
                              onTap: () async {
                                // should show search screen here
+                              // BlocProvider.of<DeliveryBookingBloc>(context).add(DestinationNotSelectedEvent(LatLng(currentLocation.latitude,currentLocation.longitude)));
+
+                           //    BlocProvider.of<DeliveryBookingBloc>(context).add(DeliveryBookingStartEvent());
+                               BlocProvider.of<DeliveryBookingBloc>(context).add(
+                                   DestinationNotSelectedEvent(LatLng(currentLocation.latitude,currentLocation.longitude)));
                                final sessionToken = Uuid().v4();
                                showSearch(
                                  context: context,
@@ -116,10 +229,51 @@ class HomeScreenState extends State<HomeScreen> {
                            ),
                          ),
                        )
-                        : Container(height: 0,)
-                       ,
-                    //  (state is MapLoadedState) ?
-                       (state is DeliveryBookingNotInitializedState) ?
+                        : Container(height: 0,),
+
+                       (state is MapLoadedState) ?
+                       Padding(
+                         padding: EdgeInsets.only(top: 120, left: 20, right: 20),
+                         child: Container(
+                           height: 50,
+                           color: Colors.white,
+                           child:  TextField(
+                             readOnly: true,
+                             controller: _textcontroller,
+                             onTap: () async {
+                               // should show search screen here
+                               // BlocProvider.of<DeliveryBookingBloc>(context).add(DestinationNotSelectedEvent(LatLng(currentLocation.latitude,currentLocation.longitude)));
+
+                               //    BlocProvider.of<DeliveryBookingBloc>(context).add(DeliveryBookingStartEvent());
+                               BlocProvider.of<DeliveryBookingBloc>(context).add(
+                                   PickupNotSelectedEvent(LatLng(currentLocation.latitude,currentLocation.longitude)));
+                               final sessionToken = Uuid().v4();
+                               showSearch(
+                                 context: context,
+                                 delegate: AddressSearch(sessionToken),
+                               );
+
+                             },
+                             decoration: InputDecoration(
+                               icon: Container(
+                                 margin: EdgeInsets.only(right: 20),
+                                 width: 10,
+                                 height: 10,
+                                 child: Icon(
+                                   Icons.search,
+                                   color: Colors.black,
+                                 ),
+                               ),
+                               hintText: "Enter your pickup address",
+                               border: InputBorder.none,
+                               contentPadding: EdgeInsets.only(left: 8.0, top: 16.0),
+                             ),
+                           ),
+                         ),
+                       )
+                           : Container(height: 0,),
+
+                     (state is MapLoadedState) ?
                        Positioned(
                          left: 0,
                          top: 0,
@@ -147,7 +301,7 @@ class HomeScreenState extends State<HomeScreen> {
 
                      ],
                    ),
-                   bottomSheet:
+              /*     bottomSheet:
                   //  (state is MapLoadedState) ?
                     BlocBuilder<DeliveryBookingBloc, DeliveryBookingState>(
                        builder: (BuildContext context, DeliveryBookingState state) {
@@ -177,7 +331,7 @@ class HomeScreenState extends State<HomeScreen> {
                        })
                        //  : Container(height: 0)
 
-
+           */
                  );
                }
           ),
@@ -187,7 +341,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-
+    mapController.dispose();
     _textcontroller.dispose();
     super.dispose();
   }

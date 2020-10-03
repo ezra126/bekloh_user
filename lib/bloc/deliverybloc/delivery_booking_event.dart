@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:meta/meta.dart';
 
 abstract class DeliveryBookingEvent extends Equatable {
   DeliveryBookingEvent();
@@ -10,14 +12,55 @@ abstract class DeliveryBookingEvent extends Equatable {
 
 class DeliveryBookingStartEvent extends DeliveryBookingEvent {}
 
-class DestinationSelectedEvent extends DeliveryBookingEvent {}
 
-class DetailsSubmittedEvent extends DeliveryBookingEvent {}
+class DestinationNotSelectedEvent extends DeliveryBookingEvent {
+  final LatLng currentLocation;
+  DestinationNotSelectedEvent(this.currentLocation);
+  @override
+  List<Object> get props => [currentLocation];
+}
 
-class DeliveryVechileSelectedEvent extends DeliveryBookingEvent{}
+class PickupNotSelectedEvent extends DeliveryBookingEvent {
+  final LatLng currentLocation;
+  PickupNotSelectedEvent(this.currentLocation);
+  @override
+  List<Object> get props => [currentLocation];
+}
+
+class DestinationSelectedEvent extends DeliveryBookingEvent {
+ // final LatLng destination;
+  //final LatLng startingLoc;
+  final LatLng destination;
+  DestinationSelectedEvent(this.destination);
+  @override
+  List<Object> get props => [destination];
+}
+
+class PickupLocationSelectedEvent extends DeliveryBookingEvent {
+  // final LatLng destination;
+  //final LatLng startingLoc;
+  final LatLng startingLoc;
+
+  PickupLocationSelectedEvent(this.startingLoc);
+  @override
+  List<Object> get props => [startingLoc];
+}
+
+class DetailsSubmittedEvent extends DeliveryBookingEvent {
+
+}
+
+class DeliveryVechileSelectedEvent extends DeliveryBookingEvent{
+
+}
 
 class SelectPaymentMethodEvent extends DeliveryBookingEvent {}
 
-class BackPressedEvent extends DeliveryBookingEvent {}
+class BackPressedEvent extends DeliveryBookingEvent {
+
+}
+
+
 
 class DeliveryBookingCancelEvent extends DeliveryBookingEvent {}
+

@@ -1,18 +1,24 @@
 //import 'package:taxi_app/models/payment_method.dart';
 
+import 'package:bekloh_user/model/delivery_service_type.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'google_location.dart';
 import 'vechile_type.dart';
 import 'payment_type.dart';
 
 class DeliveryBooking {
   final String id;
-  final GoogleLocation source;
-  final GoogleLocation destination;
+  //final GoogleLocation source;
+  //final GoogleLocation destination;
+  final LatLng source;
+  final LatLng destination;
   final DateTime bookingTime;
   final VechileType vechileType;
   final double estimatedPrice;
   final PaymentType paymentType;
   final String promoApplied;
+  final DeliveryServiceType deliveryServiceType;
 
 
   DeliveryBooking(
@@ -23,7 +29,8 @@ class DeliveryBooking {
       this.estimatedPrice,
       this.paymentType,
       this.promoApplied,
-      this.vechileType,);
+      this.vechileType,
+      this.deliveryServiceType);
 
   DeliveryBooking.named({
     this.id,
@@ -34,6 +41,7 @@ class DeliveryBooking {
     this.paymentType,
     this.estimatedPrice,
     this.promoApplied,
+    this.deliveryServiceType
   });
 
   DeliveryBooking copyWith(DeliveryBooking booking) {
@@ -45,6 +53,10 @@ class DeliveryBooking {
         paymentType: booking.paymentType ?? paymentType,
         promoApplied: booking.promoApplied ?? promoApplied,
         estimatedPrice: booking.estimatedPrice ?? estimatedPrice,
-        vechileType: booking.vechileType ?? vechileType);
+        vechileType: booking.vechileType ?? vechileType,
+        deliveryServiceType: booking.deliveryServiceType?? deliveryServiceType
+    );
   }
+
+  
 }

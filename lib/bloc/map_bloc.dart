@@ -16,3 +16,4 @@ abstract class MapState extends Equatable{
 class MapOnLoadingState extends MapState{}
 
 class MapLoadedState extends MapState{}
+

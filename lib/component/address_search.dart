@@ -94,9 +94,11 @@ class AddressSearch extends SearchDelegate<Suggestion> {
                   ),
                   GestureDetector(
                       onTap: (){
-                         Navigator.pop(context);
-                       // Navigator.pushNamed(context, PackageDetailRoute);
-                        BlocProvider.of<DeliveryBookingBloc>(context).add(DestinationSelectedEvent());
+
+                       // BlocProvider.of<DeliveryBookingBloc>(context).add(DestinationNotSelectedEvent());
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, addDestinationRoute);
+
                       },
                       child: Container(
                         decoration: BoxDecoration(
