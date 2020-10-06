@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 class MapBloc extends Cubit<MapState>{
   MapBloc() : super(MapOnLoadingState());
   void mapLoaded() => emit(MapLoadedState());
+  void mapOnLoading() => emit(MapOnLoadingState());
 }
 
 abstract class MapState extends Equatable{

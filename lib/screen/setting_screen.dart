@@ -1,12 +1,19 @@
+
+
+import 'package:bekloh_user/localization/app_localization.dart';
+import 'package:bekloh_user/main.dart';
 import 'package:flutter/material.dart';
 
-
+enum Language { amharic, english }
 class SettingScreen extends StatefulWidget {
   @override
   _SettingScreenState createState() => _SettingScreenState();
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  bool pushNotification = false;
+  bool nightMode=false;
+  Language currentLanguage = Language.english;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,85 +38,64 @@ class _SettingScreenState extends State<SettingScreen> {
                         title: Container(
                             height: 50,
                             color: Colors.blue,
-                            child: Center(child: Text(
-                              'Choose Language',
-                              style: TextStyle(color: Colors.white),))),
+                            child: Center(
+                                child: Text(
+                                  AppLocalization.of(context).getTranslateValue('choose language'),
+                              style: TextStyle(color: Colors.white),
+                            ))),
                         content: Container(
                           height: 120,
                           padding: EdgeInsets.symmetric(horizontal: 0),
                           child: Column(
                             children: [
-                              /* ListTile(
-                                     title: Text('English'),
-                                     leading: Radio(
-                                       value: Language.english,
-                                       groupValue: currentLanguage,
-                                       onChanged: (Language value) {
-                                         setState(()
-                                         {
-                                           currentLanguage = value;
-                                         });
-                                         var english= Locale('en','US');
-                                         MyApp.setLocale(context, english);
-
-                                       },
-                                     ),
-                                   ),
-                                   ListTile(
-                                     title: Text('Amharic'),
-                                     leading: Radio(
-                                       value: Language.amharic,
-                                       groupValue: currentLanguage,
-                                       onChanged: (Language value) {
-                                         setState(()
-                                         {
-                                           currentLanguage = value;
-                                         });
-                                         var amharic= Locale('am','ET');
-                                         MyApp.setLocale(context,amharic);
-                                       },
-                                     ),
-                                   ),*/
                               Expanded(
-                                flex:2,
+                                flex: 2,
                                 child: InkWell(
                                   onTap: () {
                                     var english = Locale('en', 'US');
-                                   // MyApp.setLocale(context, english);
+                                    MyApp.setLocale(context, english);
                                     Navigator.pop(context);
                                     //,
                                   },
                                   child: Container(
-                                    child: Center(
-                                        child: Text('English')),
+                                    child: Center(child: Text('English')),
                                   ),
                                 ),
                               ),
-                              Divider(height: 10,thickness: 2,),
+                              Divider(
+                                height: 10,
+                                thickness: 2,
+                              ),
                               Expanded(
-                                flex:2,
+                                flex: 2,
                                 child: InkWell(
                                     onTap: () {
                                       var amharic = Locale('am', 'ET');
-                                    //  MyApp.setLocale(context, amharic);
+                                       MyApp.setLocale(context, amharic);
                                       Navigator.pop(context);
                                     },
                                     child: Container(
-                                      child: Center(
-                                          child: Text('language')
-                                      ),
+                                      child: Center(child: Text('Amharic')),
                                     )),
                               ),
-                              Divider(height: 0,thickness: 2,),
-                              SizedBox(height: 20,),
+                              Divider(
+                                height: 0,
+                                thickness: 2,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
                               Expanded(
-                                  flex:1,
-                                  child: Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: GestureDetector(
-                                      onTap: (){Navigator.pop(context);},
-                                      child: Text('back'),),
-                                    ),
+                                flex: 1,
+                                child: Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('back'),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -119,41 +105,92 @@ class _SettingScreenState extends State<SettingScreen> {
                   );
                 },
                 child: Padding(
-                  padding: EdgeInsets.only(left: 20,top: 15,bottom: 15),
+                  padding: EdgeInsets.only(left: 20, top: 15, bottom: 15),
                   child: Row(
                     children: [
                       Icon(Icons.language),
-                      SizedBox(width: 10,),
+                      SizedBox(
+                        width: 10,
+                      ),
                       Text('Change Language'),
                     ],
                   ),
-                )
+                )),
+            Divider(
+              height: 0,
             ),
-            Divider(height: 0,),
             InkWell(
-              onTap: (){},
+              onTap: () {},
               child: Padding(
-                padding: EdgeInsets.only(left: 20,top: 15,bottom: 15),
+                padding: EdgeInsets.only(left: 20, top: 15, bottom: 15),
                 child: Row(
                   children: [
                     Icon(Icons.lock),
-                    SizedBox(width: 10,),
+                    SizedBox(
+                      width: 10,
+                    ),
                     Text('Change Password'),
                   ],
                 ),
               ),
             ),
-            Divider(height: 0,),
+            Divider(
+              height: 0,
+            ),
             Padding(
-              padding: EdgeInsets.only(left: 25,top: 15,bottom: 15, right: 20),
+              padding:
+                  EdgeInsets.only(left: 25, top: 2, bottom: 2, right: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Push Notification'),
-                  Text('ho'),
+                  Transform.scale(
+                    scale: 1.5,
+                    child: Switch(
+                      value: pushNotification,
+                      onChanged: (value){
+                        setState(() {
+                          pushNotification=value;
+                          // print(isSwitched);
+                        });
+                      },
+                      activeTrackColor: Colors.lightGreenAccent,
+                      activeColor: Colors.green,
+                    ),
+                  ),
                 ],
               ),
-            )
+            ),
+            Divider(
+              height: 0,
+            ),
+            Padding(
+              padding:
+              EdgeInsets.only(left: 25, top: 2, bottom: 2, right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Night Mode'),
+                  Transform.scale(
+                    scale: 1.5,
+                    child: Switch(
+                      value: nightMode,
+                      onChanged: (value){
+                        setState(() {
+                          nightMode=value;
+                         // print(isSwitched);
+                        });
+                      },
+                      activeTrackColor: Colors.lightGreenAccent,
+                      activeColor: Colors.green,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Divider(
+              height: 0,
+            ),
           ],
         ),
       ),

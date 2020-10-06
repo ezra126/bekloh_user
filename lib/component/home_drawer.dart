@@ -1,4 +1,5 @@
 import 'package:bekloh_user/bloc/authbloc/auth_bloc.dart';
+import 'package:bekloh_user/bloc/map_bloc.dart';
 import 'package:bekloh_user/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -168,7 +169,30 @@ class MainDrawer extends StatelessWidget {
         Divider(color: Colors.black45,height: 4,),
         InkWell(
           onTap: (){
-            BlocProvider.of<AuthenticationCubit>(context).loggedOut();
+            showDialog(
+              context: context,
+              builder: (_)=>AlertDialog(
+                title: new Text("Logout"),
+                content: new Text("Are you sure you want to logout?"),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Yes'),
+                    onPressed: () {
+                      BlocProvider.of<AuthenticationCubit>(context).loggedOut();
+                      BlocProvider.of<MapBloc>(context).mapOnLoading();
+                    },
+                  ),
+                  FlatButton(
+                    child: Text('No'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              )
+            );
+           // BlocProvider.of<AuthenticationCubit>(context).loggedOut();
+         //   BlocProvider.of<MapBloc>(context).mapOnLoading();
           },
           child: CustomListTile(frontIcon: Icons.exit_to_app,
               text: ('Log Out')),

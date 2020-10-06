@@ -52,7 +52,6 @@ class DeliveryBookingBloc extends Bloc<DeliveryBookingEvent, DeliveryBookingStat
       deliveryBooking =await DeliveryBookingStorage.addDetails(DeliveryBooking.named(source: startingLoc));
       var booking = await DeliveryBookingStorage.getDeliveryBooking();
       print(booking.source);
-      print('ffffffffffffffffffffffffffffffffffffffffff');
      // yield DetailsNotFilledState();
     }
     if(event is DetailsSubmittedEvent){
@@ -62,15 +61,21 @@ class DeliveryBookingBloc extends Bloc<DeliveryBookingEvent, DeliveryBookingStat
     }
     if(event is DeliveryVechileSelectedEvent){
       DeliveryBooking deliveryBooking;
-      deliveryBooking= await DeliveryBookingStorage.getDeliveryBooking();
-
+      deliveryBooking=await DeliveryBookingStorage.addDetails(DeliveryBooking.named(vechileType: event.vechileType));
       yield PaymentMethodNotSelectedState(booking: deliveryBooking);
     }
     if(event is SelectPaymentMethodEvent){
       DeliveryBooking deliveryBooking;
-      deliveryBooking= await DeliveryBookingStorage.getDeliveryBooking();
+      deliveryBooking=await DeliveryBookingStorage.addDetails(DeliveryBooking.named(paymentType: event.paymentType));
       yield DeliveryVechileTypeNotSelectedState(booking: deliveryBooking);
     }
+
+    if(event is BackPressedEventFromPayment){
+      DeliveryBooking deliveryBooking;
+      deliveryBooking=await DeliveryBookingStorage.addDetails(DeliveryBooking.named(paymentType: event.paymentType));
+      yield DeliveryVechileTypeNotSelectedState(booking: deliveryBooking);
+    }
+
     if(event is BackPressedEvent){
       switch (state.runtimeType) {
         case PaymentMethodNotSelectedState:

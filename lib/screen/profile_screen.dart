@@ -29,6 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return BlocProvider<ProfileUpdateBloc>(
       create: (BuildContext context) => ProfileUpdateBloc(),
       child: Scaffold(
+        appBar: AppBar(),
         key: _scaffoldKey,
         body: Builder(
           builder: (context) {
@@ -48,16 +49,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            (state is ProfileUpdatingNotInitializedState)
-                                ? RaisedButton(
-                                    onPressed: () {
-                                      BlocProvider.of<ProfileUpdateBloc>(
-                                              context)
-                                          .updateProfile();
-                                    },
-                                    child: Text('edit profile'),
-                                  )
-                                : Container(),
                             Row(
                               children: [
                                 GestureDetector(

@@ -31,7 +31,7 @@ class TaxiBookingStateWidget extends StatelessWidget {
         }
         return Container(
           color: Colors.black,
-          padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+          padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 24.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,

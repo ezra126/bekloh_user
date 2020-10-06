@@ -39,7 +39,7 @@ class AddressSearch extends SearchDelegate<Suggestion> {
       tooltip: 'Back',
       icon: Icon(Icons.arrow_back),
       onPressed: () {
-        close(context, null);
+        this.close(context, null);
       },
     );
   }

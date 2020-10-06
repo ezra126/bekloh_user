@@ -91,49 +91,6 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
                       // DeliveryMap(),
                        BlocBuilder<DeliveryBookingBloc,DeliveryBookingState>(
                            builder: (context,DeliveryBookingState state){
-                           /*  if(state is DeliveryBookingNotInitializedState){
-                               return  currentLocation==null ? Center(child: CircularProgressIndicator(),) : GoogleMap(
-                                   mapType: MapType.normal,
-                                   initialCameraPosition: CameraPosition(
-                                     target: currentPosition,
-                                     zoom: 16,
-                                   ),
-                                   zoomControlsEnabled: false,
-                                   zoomGesturesEnabled: true,
-                                   scrollGesturesEnabled: true,
-                                   compassEnabled: true,
-                                   rotateGesturesEnabled: true,
-                                   tiltGesturesEnabled: true,
-                                   myLocationEnabled: true,
-                                   myLocationButtonEnabled: false,
-                                   //markers: markers,
-                                   //onCameraMove: state is DeliveryBookingNotInitializedState ? null: ((_position) => _updatePosition(_position, "ndfkjnkjdf"))  ,
-                                   gestureRecognizers: Set()
-                                     ..add(Factory<PanGestureRecognizer>(
-                                             () => PanGestureRecognizer()))
-                                     ..add(
-                                       Factory<OneSequenceGestureRecognizer>(
-                                             () => new EagerGestureRecognizer(),
-                                       ),
-                                     )
-                                     ..add(Factory<ScaleGestureRecognizer>(
-                                             () => ScaleGestureRecognizer()))
-                                     ..add(Factory<TapGestureRecognizer>(
-                                             () => TapGestureRecognizer()))
-                                     ..add(Factory<VerticalDragGestureRecognizer>(
-                                             () => VerticalDragGestureRecognizer())),
-
-
-                                   onMapCreated: (GoogleMapController controller) async {
-                                     //BlocProvider.of<MapBloc>(context).mapLoaded();
-                                     if (mounted) {
-                                       setState(() {
-                                         mapController = controller;
-                                       });
-                                     }
-
-                                   });
-                             } */
                              return currentPosition== null ?
                              Center(child: SpinKitRipple(
                                color: Colors.blue,
@@ -191,10 +148,20 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
 
                        (state is MapLoadedState) ?
                        Padding(
-                         padding: EdgeInsets.only(top: 80, left: 20, right: 20),
+                         padding: EdgeInsets.only(top: 65, left: 20, right: 20),
                          child: Container(
                            height: 50,
-                           color: Colors.white,
+                           decoration: BoxDecoration(
+                             //shape: BoxShape.circle,
+                             color: Colors.white,
+                             boxShadow: [
+                               BoxShadow(
+                                 color: Colors.grey,
+                                 offset: Offset(0.0, 1.0), //(x,y)
+                                 blurRadius: 4.0,
+                               ),
+                             ],
+                           ),
                            child:  TextField(
                              readOnly: true,
                              controller: _textcontroller,
@@ -215,6 +182,7 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
                              decoration: InputDecoration(
                                icon: Container(
                                  margin: EdgeInsets.only(right: 20),
+                                 padding: EdgeInsets.only(left: 15),
                                  width: 10,
                                  height: 10,
                                  child: Icon(
@@ -222,7 +190,7 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
                                    color: Colors.black,
                                  ),
                                ),
-                               hintText: "Enter your shipping address",
+                               hintText: "Enter your destination address",
                                border: InputBorder.none,
                                contentPadding: EdgeInsets.only(left: 8.0, top: 16.0),
                              ),
@@ -232,11 +200,52 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
                         : Container(height: 0,),
 
                        (state is MapLoadedState) ?
+                       Positioned(
+                         bottom:45,
+                         right: 15,
+                         child: Container(
+                           // margin: EdgeInsets.only(bottom: 135,right: 12),
+                           decoration: BoxDecoration(
+                             shape: BoxShape.circle,
+                             color: Colors.white,
+                             boxShadow: [
+                               BoxShadow(
+                                 color: Colors.grey,
+                                 offset: Offset(0.0, 1.0), //(x,y)
+                                 blurRadius: 5.0,
+                               ),
+                             ],
+                           ),
+                           child: IconButton(
+                             splashColor: Colors.blue,
+                             icon: Icon(Icons.gps_fixed),
+                             onPressed: () async{
+                               mapController.animateCamera(CameraUpdate.newCameraPosition(
+                                 CameraPosition(
+                                     target: currentPosition,
+                                     zoom: 16),));
+
+                             },
+                           ),
+                         ),
+                       ): Container(),
+
+                         (state is MapLoadedState) ?
                        Padding(
                          padding: EdgeInsets.only(top: 120, left: 20, right: 20),
                          child: Container(
                            height: 50,
-                           color: Colors.white,
+                           decoration: BoxDecoration(
+                             //shape: BoxShape.circle,
+                             color: Colors.white,
+                             boxShadow: [
+                               BoxShadow(
+                                 color: Colors.grey,
+                                 offset: Offset(0.0, 1.0), //(x,y)
+                                 blurRadius: 4.0,
+                               ),
+                             ],
+                           ),
                            child:  TextField(
                              readOnly: true,
                              controller: _textcontroller,
@@ -257,6 +266,7 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
                              decoration: InputDecoration(
                                icon: Container(
                                  margin: EdgeInsets.only(right: 20),
+                                 padding: EdgeInsets.only(left: 15),
                                  width: 10,
                                  height: 10,
                                  child: Icon(

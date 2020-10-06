@@ -1,3 +1,5 @@
+import 'package:bekloh_user/model/payment_type.dart';
+import 'package:bekloh_user/model/vechile_type.dart';
 import 'package:equatable/equatable.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
@@ -51,13 +53,27 @@ class DetailsSubmittedEvent extends DeliveryBookingEvent {
 }
 
 class DeliveryVechileSelectedEvent extends DeliveryBookingEvent{
-
+   final VechileType vechileType;
+   DeliveryVechileSelectedEvent(this.vechileType);
+   @override
+   List<Object> get props => [VechileType];
 }
 
-class SelectPaymentMethodEvent extends DeliveryBookingEvent {}
+class SelectPaymentMethodEvent extends DeliveryBookingEvent {
+  final PaymentType paymentType;
+  SelectPaymentMethodEvent(this.paymentType);
+  @override
+  List<Object> get props => [paymentType];
+}
+
+class BackPressedEventFromPayment extends DeliveryBookingEvent {
+  final PaymentType paymentType;
+  BackPressedEventFromPayment(this.paymentType);
+  @override
+  List<Object> get props => [paymentType];
+}
 
 class BackPressedEvent extends DeliveryBookingEvent {
-
 }
 
 

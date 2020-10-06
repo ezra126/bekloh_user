@@ -1,0 +1,26 @@
+{
+  "setting": "Setting",
+  "profile": "Profile",
+  "rating": "Rating",
+  "years": "years",
+  "starts": "starts",
+  "trips": "trips",
+
+  "connecting": "Connecting",
+  "you're offline": "you're offline",
+  "you're online": "you're online",
+  "picture": "picture",
+  "earning": "Earning",
+  "summary": "Summary",
+  "help": "Help",
+  "notification": "Notification",
+  "Upload Personal Document": "Upload Percent Document",
+  "log out": "Log Out",
+  "register": "Register",
+  "sign in": "Sign In",
+  "language": "አማርኛ",
+  "choose language": "Choose Language",
+  "back": "Back",
+  "go" : "GO",
+  "stop": "STOP"
+}
