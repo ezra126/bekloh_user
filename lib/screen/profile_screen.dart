@@ -28,229 +28,246 @@ class _ProfileScreenState extends State<ProfileScreen> {
     double _width = MediaQuery.of(context).size.width;
     return BlocProvider<ProfileUpdateBloc>(
       create: (BuildContext context) => ProfileUpdateBloc(),
-      child: Scaffold(
-        appBar: AppBar(),
-        key: _scaffoldKey,
-        body: Builder(
-          builder: (context) {
-            return BlocBuilder<ProfileUpdateBloc, ProfileUpdateState>(
-                builder: (BuildContext context, ProfileUpdateState state) {
-              return SingleChildScrollView(
-                child: Stack(
-                  // overflow: Overflow.visible,
-                  children: <Widget>[
-                    Container(
-                      color: Colors.blue[600],
-                      height: MediaQuery.of(context).size.height * .4,
-                      width: MediaQuery.of(context).size.width,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            left: _width * .1, top: _height * .05, right: 30),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    showPickOptionsDialog(context);
-                                  },
-                                  child: Container(
-                                      child: CircleAvatar(
-                                        radius: 40,
-                                        child: _pickedImage == null
-                                            ? Text('Picture')
-                                            : null,
-                                        backgroundImage: _pickedImage != null
-                                            ? FileImage(_pickedImage)
-                                            : null,
-                                      ),
-                                      height: _height * .13,
-                                      width: _width * .28,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                      )),
-                                ),
-                                SizedBox(
-                                  width: _width * .1 / 3,
-                                ),
-                                Text(
-                                  'Israel Getahun',
-                                  style: TextStyle(fontSize: 20),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: _height * .05,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: _width * .09, right: _width * .09),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    children: <Widget>[
-                                      Text(
-                                        "10.2K",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        "Wallet",
-                                        style: TextStyle(
-                                          color: Colors.white70,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    children: <Widget>[
-                                      Text(
-                                        "10.2K",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        "Promo",
-                                        style: TextStyle(
-                                          color: Colors.white70,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    children: <Widget>[
-                                      Text(
-                                        "10.2K",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        "Rate",
-                                        style: TextStyle(
-                                          color: Colors.white70,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            )
-
-                            // SizedBox(width: 5 * SizeConfig.widthMultiplier,),
-                          ],
-                        ),
-                      ),
-                    ),
-                    if (state is ProfileUpdatingNotInitializedState)
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * .5),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Icon(Icons.email),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Text('israelgetahun22@gmail.com')
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.phone,
-                                  size: 30,
-                                ),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Text('+251 929416014 ')
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Icon(Icons.language),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Text('speaks Amharic and Oromifa')
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Icon(Icons.home),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Text('lives in Addis Ababa , Ethiopia')
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    if (state is ProfileOnUpdatingState)
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * .4),
-                        child: Container(
-                          margin: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * .05,
-                              right: MediaQuery.of(context).size.width * .05),
-                          child: Container(
-                            padding: EdgeInsets.only(top: 40),
+      child: Builder(
+        builder: (context){
+          return BlocBuilder<ProfileUpdateBloc, ProfileUpdateState>(
+            builder: (BuildContext context, ProfileUpdateState state){
+              return Scaffold(
+                  appBar: AppBar(
+                    elevation: 0,
+                    actions: [
+                      if (state is ProfileUpdatingNotInitializedState)  Padding(
+                          padding: EdgeInsets.only(right: 20.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              BlocProvider.of<ProfileUpdateBloc>(context).updateProfile();
+                            },
+                            child: Center(child: Text('Edit Profile')),
+                          ))
+                    ],
+                  ),
+                  key: _scaffoldKey,
+                  body:   SingleChildScrollView(
+                    child: Stack(
+                      // overflow: Overflow.visible,
+                      children: <Widget>[
+                        Container(
+                          color: Colors.blue[600],
+                          height: MediaQuery.of(context).size.height * .4,
+                          width: MediaQuery.of(context).size.width,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: _width * .1, top: _height * .05, right: 30),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                TextFormField(
-                                  decoration: const InputDecoration(
-                                    icon: Icon(Icons.person),
-                                    labelText: 'Israel',
-                                  ),
-                                ),
-                                TextFormField(
-                                  decoration: const InputDecoration(
-                                    icon: Icon(Icons.phone),
-                                    labelText: '0929416014',
-                                  ),
-                                ),
-                                TextFormField(
-                                  decoration: const InputDecoration(
-                                    icon: Icon(Icons.email),
-                                    labelText: 'email',
-                                  ),
+                                Row(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        showPickOptionsDialog(context);
+                                      },
+                                      child: Container(
+                                          child: CircleAvatar(
+                                            radius: 40,
+                                            child: _pickedImage == null
+                                                ? Text('Picture')
+                                                : null,
+                                            backgroundImage: _pickedImage != null
+                                                ? FileImage(_pickedImage)
+                                                : null,
+                                          ),
+                                          height: _height * .13,
+                                          width: _width * .28,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                          )),
+                                    ),
+                                    SizedBox(
+                                      width: _width * .1 / 3,
+                                    ),
+                                    Text(
+                                      'Israel Getahun',
+                                      style: TextStyle(fontSize: 20),
+                                    )
+                                  ],
                                 ),
                                 SizedBox(
-                                  height: 10,
+                                  height: _height * .05,
                                 ),
-                                RaisedButton(
-                                    onPressed: () {
-                                      BlocProvider.of<ProfileUpdateBloc>(
-                                              context)
-                                          .submitEditingProfile();
-                                    },
-                                    child: Container(
-                                      child: Text('Update User'),
-                                      decoration: const BoxDecoration(),
-                                    ))
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: _width * .09, right: _width * .09),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        children: <Widget>[
+                                          Text(
+                                            "10.2K",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            "Wallet",
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        children: <Widget>[
+                                          Text(
+                                            "10.2K",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            "Promo",
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        children: <Widget>[
+                                          Text(
+                                            "10.2K",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            "Rate",
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )
+
+                                // SizedBox(width: 5 * SizeConfig.widthMultiplier,),
                               ],
                             ),
                           ),
                         ),
-                      )
+                        if (state is ProfileUpdatingNotInitializedState)
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * .5),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.email),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text('israelgetahun22@gmail.com')
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.phone,
+                                      size: 30,
+                                    ),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text('+251 929416014 ')
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.language),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text('speaks Amharic and Oromifa')
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.home),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text('lives in Addis Ababa , Ethiopia')
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        if (state is ProfileOnUpdatingState)
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * .4),
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                  left: MediaQuery.of(context).size.width * .05,
+                                  right: MediaQuery.of(context).size.width * .05),
+                              child: Container(
+                                padding: EdgeInsets.only(top: 40),
+                                child: Column(
+                                  children: [
+                                    TextFormField(
+                                      decoration: const InputDecoration(
+                                        icon: Icon(Icons.person),
+                                        labelText: 'Israel',
+                                      ),
+                                    ),
+                                    TextFormField(
+                                      decoration: const InputDecoration(
+                                        icon: Icon(Icons.phone),
+                                        labelText: '0929416014',
+                                      ),
+                                    ),
+                                    TextFormField(
+                                      decoration: const InputDecoration(
+                                        icon: Icon(Icons.email),
+                                        labelText: 'email',
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    RaisedButton(
+                                        onPressed: () {
+                                          BlocProvider.of<ProfileUpdateBloc>(
+                                              context)
+                                              .submitEditingProfile();
+                                        },
+                                        child: Container(
+                                          child: Text('Update User'),
+                                          decoration: const BoxDecoration(),
+                                        ))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
 
-                    //    Container(color: Colors.lightBlue);
-                  ],
-                ),
+                        //    Container(color: Colors.lightBlue);
+                      ],
+                    ),
+                  )
+
+
               );
-            });
-          },
-        ),
+            }
+
+          );
+        },
+
       ),
     );
   }

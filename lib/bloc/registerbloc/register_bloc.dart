@@ -21,9 +21,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   @override
   Stream<Transition<RegisterEvent, RegisterState>> transformEvents (
-      Stream<RegisterEvent> events,
-      next,
-      ) {
+      Stream<RegisterEvent> events, next,) {
     final observableStream = events;
     final nonDebounceStream = observableStream.where((event) {
       return (event is! EmailChanged && event is! PasswordChanged);

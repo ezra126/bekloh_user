@@ -9,3 +9,5 @@ const String settingRoute= '/SettingScreen';
 const String PackageDetailRoute= '/PackageDatailScreen';
 const String addDestinationRoute= '/AddDestinationScreen';
 const String chooseVechileAndPaymentRoute= '/ChooseVechileAndPaymentScreen';
+const String walletRoute= '/WalletScreen';
+const String selectLocationRoute= '/SelectLocationScreen';

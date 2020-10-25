@@ -1,6 +1,6 @@
 import 'dart:async';
-
 import 'package:bekloh_user/bloc/authbloc/auth_bloc.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:bekloh_user/bloc/deliverybloc/delivery_booking_bloc.dart';
 import 'package:bekloh_user/bloc/deliverybloc/delivery_booking_event.dart';
 import 'package:bekloh_user/bloc/deliverybloc/delivery_booking_state.dart';
@@ -30,6 +30,8 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   //LatLng _center = LatLng(-8.913025, 13.202462);
+  String _mapStyle;
+
   final _textcontroller = TextEditingController();
   GoogleMapController mapController;
   Location location ;
@@ -44,6 +46,11 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
   @override
   void initState() {
     super.initState();
+
+    rootBundle.loadString('assets/themes/map/night.json').then((string) {
+      _mapStyle = string;
+    });
+
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
     location = Location();
@@ -130,11 +137,13 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
 
 
                                  onMapCreated: (GoogleMapController controller) async {
+
                                    //BlocProvider.of<MapBloc>(context).mapLoaded();
                                    if (mounted) {
                                      setState(() {
                                        mapController = controller;
                                      });
+                                     mapController.setMapStyle('');
                                    }
                                   // BlocProvider.of<MapBloc>(context).mapLoaded();
                                  });
@@ -142,9 +151,6 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
                            }
 
                        ),
-
-
-
 
                        (state is MapLoadedState) ?
                        Padding(
@@ -220,11 +226,9 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
                              splashColor: Colors.blue,
                              icon: Icon(Icons.gps_fixed),
                              onPressed: () async{
-                               mapController.animateCamera(CameraUpdate.newCameraPosition(
-                                 CameraPosition(
-                                     target: currentPosition,
-                                     zoom: 16),));
-
+                              // mapController.animateCamera(CameraUpdate.newCameraPosition(
+                             //    CameraPosition(target: currentPosition, zoom: 16),));
+                               Navigator.pushNamed(context, selectLocationRoute);
                              },
                            ),
                          ),

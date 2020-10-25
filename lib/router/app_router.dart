@@ -5,8 +5,10 @@ import 'package:bekloh_user/screen/home_screen.dart';
 import 'package:bekloh_user/screen/login_screen.dart';
 import 'package:bekloh_user/screen/profile_screen.dart';
 import 'package:bekloh_user/screen/register_screen.dart';
+import 'package:bekloh_user/screen/select_location_screen.dart';
 import 'package:bekloh_user/screen/setting_screen.dart';
 import 'package:bekloh_user/screen/support_screen.dart';
+import 'package:bekloh_user/screen/wallet_screen.dart';
 import 'package:bekloh_user/screen/welcome_screen.dart';
 import 'package:bekloh_user/utilities/constants.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +39,10 @@ class Router {
         return MaterialPageRoute(builder: (_) =>  AddDestinationScreen());
       case  chooseVechileAndPaymentRoute:
         return MaterialPageRoute(builder: (_) =>  ChooseVechileAndPaymentScreen());
+      case walletRoute:
+        return MaterialPageRoute(builder: (_) =>  WalletScreen());
+      case selectLocationRoute:
+        return MaterialPageRoute(builder: (_) => SelectLocationScreen());
 
       default:
         return MaterialPageRoute(

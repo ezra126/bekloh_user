@@ -57,6 +57,8 @@ dependencies:
   flutter_polyline_points: ^0.2.4
   sliding_up_panel: ^1.0.2
   shared_preferences: ^0.5.8
+  cloud_firestore: ^0.13.7
+  flutter_otp: ^0.3.2
 
 
 dev_dependencies:
@@ -82,8 +84,13 @@ flutter:
     - assets/logos/truck.png
     - assets/logos/truck1.png
     - assets/logos/pickup.png
+    - assets/smallmove.jpg
+    - assets/storedelivery.jpg
+    - assets/apartment.jpg
     - lib/lang/en.json
     - lib/lang/am.json
+    - assets/themes/map/day.json
+    - assets/themes/map/night.json
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

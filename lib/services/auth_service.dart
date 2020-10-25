@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -36,8 +38,10 @@ class UserRepository {
       case FacebookLoginStatus.loggedIn:
         final token = result.accessToken.token;
         final graphResponse = await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${token}');
-        //final profile = JSON.decode(graphResponse.body);
+        final profile = json.decode(graphResponse.body);
+        
         print(graphResponse.body);
+
         print('login');
         final credential = FacebookAuthProvider.getCredential(
             accessToken: token);
@@ -71,9 +75,15 @@ class UserRepository {
     return currentUser==null;
 }
 
-  Future<String> getUser() async {
-    return (await _firebaseAuth.currentUser()).email;
+  Future<FirebaseUser> getUser() async {
+    return (await _firebaseAuth.currentUser());
+
+
+
   }
+
+
+
 
 
 

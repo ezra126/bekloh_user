@@ -1,6 +1,8 @@
 import 'package:bekloh_user/bloc/authbloc/auth_bloc.dart';
+import 'package:bekloh_user/bloc/authbloc/auth_state.dart';
 import 'package:bekloh_user/bloc/map_bloc.dart';
 import 'package:bekloh_user/utilities/constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,6 +13,7 @@ class HomeDrawer extends StatefulWidget {
 }
 
 class _HomeDrawerState extends State<HomeDrawer> {
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -78,6 +81,7 @@ Widget linkMenuDrawer(String title, Function onPressed) {
 
 
 class MainDrawer extends StatelessWidget {
+  final databaseReference = Firestore.instance;
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -92,8 +96,20 @@ class MainDrawer extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: MediaQuery.of(context).size.width/12,
+                BlocBuilder<AuthenticationCubit,AuthenticationState>(
+                  builder: (context,state){
+                    if(state is Authenticated){
+                      return CircleAvatar(
+                        radius: MediaQuery.of(context).size.width/12,
+                        child: Image(
+                            image: NetworkImage(state.user.photoUrl.toString()),
+                      ));
+                    }
+                    return CircleAvatar(
+                      radius: MediaQuery.of(context).size.width/12,
+                    );
+                  },
+
                 ),
                 SizedBox(height: 10,),
                 Text('Israel Getahun'),
@@ -119,18 +135,24 @@ class MainDrawer extends StatelessWidget {
           ),
         ),
         GestureDetector(
-            onTap: (){
-              Navigator.pop(context);
+            onTap: () async{
+              await databaseReference.collection("books")
+                  .document("1")
+                  .setData({
+                'title': 'Mastering Flutter',
+                'description': 'Programming Guide for Dart'
+              });
+             // Navigator.pop(context);
              // print('ezi new');
-              Navigator.pushNamed(context,profileRoute);
+             Navigator.pushNamed(context,profileRoute);
             },
             child: CustomListTile(frontIcon: Icons.person,
                 text: ('My Profile'))),
         Divider(color: Colors.black45,height: 4,),
         InkWell(
             onTap: (){
-              Navigator.pop(context);
-             // Navigator.pushNamed(context,EarningRoute);
+             // Navigator.pop(context);
+              Navigator.pushNamed(context,walletRoute);
             },
             child: CustomListTile(frontIcon: Icons.attach_money, text: ('My Wallet'))),
         Divider(color: Colors.black45,height: 4,),

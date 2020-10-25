@@ -22,6 +22,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+
 class ChooseVechileAndPaymentScreen extends StatefulWidget {
   @override
   _ChooseVechileAndPaymentScreenState createState() =>

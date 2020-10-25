@@ -38,6 +38,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
             WidgetsBinding.instance.addPostFrameCallback((_) {
           //    BlocProvider.of<AuthenticationCubit>(context).appStarted();
+
             }
             );
         // Timer(Duration(seconds: 5), () => Navigator.pushNamed(context, welcomeRoute));

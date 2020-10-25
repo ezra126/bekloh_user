@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import  'package:bekloh_user/bloc/authbloc/auth_event.dart';
 import  'package:bekloh_user/bloc/authbloc/auth_state.dart';
 import 'package:bekloh_user/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 class AuthenticationCubit extends Cubit<AuthenticationState> {
@@ -19,9 +20,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     try {
       final isSignedIn = await _userRepository.isSignedIn();
       if (isSignedIn) {
-        final name = await _userRepository.getUser();
-        emit(Authenticated(name));
-
+        final FirebaseUser user = await _userRepository.getUser();
+        emit(Authenticated(user));
       } else {
         emit(Unauthenticated());
       }
@@ -29,8 +29,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       emit(Unauthenticated());
     }
   }
-  void loggedIn() {
-    emit(Authenticated('hello'));
+  void loggedIn() async {
+    emit(Authenticated(await _userRepository.getUser()));
   }
   Future<void> loggedOut() async {
     await _userRepository.signOut();
@@ -55,8 +55,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
      try {
        final isSignedIn = await _userRepository.isSignedIn();
        if (isSignedIn) {
-         final name = await _userRepository.getUser();
-         emit(Authenticated(name));
+         final user = await _userRepository.getUser();
+         emit(Authenticated(user));
 
        } else {
          emit(Unauthenticated());
@@ -66,11 +66,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
      }
   }
 
-   _mapLoggedInToState() async* {
-    // print('hello');
-     emit(Authenticated('hf'));
-
-  }
 
    _mapLoggedOutToState() async* {
     var isLoggedOut=false;
