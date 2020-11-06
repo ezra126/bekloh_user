@@ -1,1 +1,1 @@
-enum DeliveryServiceType { LargePackageService, SmallPackageService  }
+enum DeliveryServiceType { SmallMove, StoreDelivery, HouseMove  }

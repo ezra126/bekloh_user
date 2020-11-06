@@ -156,7 +156,7 @@ class _DeliveryMapState extends State<DeliveryMap> {
            // Navigator.pop(context);
             //     addMarker();
           }
-          if (state is DeliveryVechileTypeNotSelectedState) {}
+          if (state is  DeliveryVechileAndPaymentTypeNotSelectedState) {}
           if (state is DeliveryBookingConfirmedState) {}
         },
         child: BlocBuilder<DeliveryBookingBloc,DeliveryBookingState>(

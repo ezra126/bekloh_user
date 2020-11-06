@@ -22,6 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final ImagePicker _picker = ImagePicker();
   String fileName;
 
+
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;

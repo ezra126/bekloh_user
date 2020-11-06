@@ -146,8 +146,7 @@ class MainDrawer extends StatelessWidget {
              // print('ezi new');
              Navigator.pushNamed(context,profileRoute);
             },
-            child: CustomListTile(frontIcon: Icons.person,
-                text: ('My Profile'))),
+            child: CustomListTile(frontIcon: Icons.person, text: ('My Profile'))),
         Divider(color: Colors.black45,height: 4,),
         InkWell(
             onTap: (){
@@ -161,8 +160,7 @@ class MainDrawer extends StatelessWidget {
               Navigator.pop(context);
              // Navigator.pushNamed(context,SummaryRoute);
             },
-            child: CustomListTile(frontIcon: Icons.history,
-                text: ('History'))),
+            child: CustomListTile(frontIcon: Icons.history, text: ('History'))),
         Divider(color: Colors.black45,height: 4,),
         InkWell(
             onTap: (){
@@ -178,7 +176,7 @@ class MainDrawer extends StatelessWidget {
             Navigator.pushNamed(context,settingRoute);
           },
           child: CustomListTile(frontIcon: Icons.settings,
-              text: ('Setting')),
+            text: ('Setting')),
         ),
         Divider(color: Colors.black45,height: 4,),
         InkWell(

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bekloh_user/bloc/deliverybloc/delivery_booking_bloc.dart';
 import 'package:bekloh_user/bloc/deliverybloc/delivery_booking_event.dart';
 import 'package:bekloh_user/utilities/constants.dart';
@@ -11,11 +13,12 @@ class AddressSearch extends SearchDelegate<Suggestion> {
   }
 
   @override
-  String get searchFieldLabel => "Enter Your Destination";
+  String get searchFieldLabel => "Enter Your Address";
 
   @override
   // TODO: implement textInputAction
   TextInputAction get textInputAction => super.textInputAction;
+
 
   final sessionToken;
   PlaceApiProvider apiClient;
@@ -39,7 +42,11 @@ class AddressSearch extends SearchDelegate<Suggestion> {
       tooltip: 'Back',
       icon: Icon(Icons.arrow_back),
       onPressed: () {
-        this.close(context, null);
+        FocusScope.of(context).requestFocus(new FocusNode());
+        Timer(Duration(milliseconds: 200),(){
+          this.close(context, null);
+        });
+
       },
     );
   }
@@ -96,8 +103,15 @@ class AddressSearch extends SearchDelegate<Suggestion> {
                       onTap: (){
 
                        // BlocProvider.of<DeliveryBookingBloc>(context).add(DestinationNotSelectedEvent());
-                        Navigator.pop(context);
-                        Navigator.pushNamed(context, addDestinationRoute);
+                        FocusScope.of(context).requestFocus(new FocusNode());
+                        Timer(Duration(milliseconds: 200),(){
+                          this.close(context, null);
+                          Navigator.pushNamed(context, addDestinationRoute);
+                        });
+
+
+                       
+
 
                       },
                       child: Container(

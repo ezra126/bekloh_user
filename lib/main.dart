@@ -10,6 +10,7 @@ import 'package:bekloh_user/screen/login_screen.dart';
 import 'package:bekloh_user/screen/register_screen.dart';
 import 'package:bekloh_user/screen/splash_screen.dart';
 import 'package:bekloh_user/screen/welcome_screen.dart';
+import 'package:bekloh_user/services/OrderService/order_repository.dart';
 import 'package:bekloh_user/services/auth_service.dart';
 import 'package:bekloh_user/utilities/constants.dart';
 import "package:flutter/material.dart";
@@ -21,6 +22,7 @@ import 'bloc/map_bloc.dart';
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   UserRepository _userRepository = UserRepository();
+  OrderRepository orderRepository=OrderRepository();
   Bloc.observer = SimpleBlocDelegate();
   runApp(MultiBlocProvider(providers: [
     BlocProvider<DeliveryBookingBloc>(
@@ -39,7 +41,13 @@ Future<void> main() async{
           LoginBloc(userRepository: _userRepository),
     ),
     BlocProvider<MapBloc>(create: (BuildContext context) => MapBloc()),
-  ], child: MyApp()));
+  ], child:  MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<OrderRepository>(
+          create: (context) => orderRepository,
+        ),
+      ],
+      child: MyApp())));
 }
 
 class MyApp extends StatefulWidget {
@@ -99,8 +107,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      //showPerformanceOverlay: true,
       debugShowCheckedModeBanner: false,
       navigatorKey: _navigatorKey,
+      title: 'Bekloh',
       //initialRoute:  BlocProvider.of<AuthenticationBloc>(context) == Uninitialized ? splashscreenRoute : loginScreenRoute,
       initialRoute: splashscreenRoute,
       onGenerateRoute: Router.generateRoute,

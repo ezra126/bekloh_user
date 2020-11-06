@@ -1,12 +1,12 @@
-import 'dart:async';
-
 import 'package:bekloh_user/bloc/deliverybloc/delivery_booking_bloc.dart';
 import 'package:bekloh_user/bloc/deliverybloc/delivery_booking_event.dart';
 import 'package:bekloh_user/bloc/deliverybloc/delivery_booking_state.dart';
-import 'package:bekloh_user/component/delivery_map.dart';
+import 'package:bekloh_user/component/addPickandDestination_widget.dart';
+//import 'package:bekloh_user/component/delivery_map.dart';
+import 'package:bekloh_user/router/screens_argument.dart';
 import 'package:bekloh_user/utilities/constants.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
+//import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,121 +18,65 @@ class AddDestinationScreen extends StatefulWidget {
 }
 
 class _AddDestinationScreenState extends State<AddDestinationScreen> {
-  Completer<GoogleMapController> _Controller = Completer();
-  GoogleMapController mapController;
   LocationData currentLocation;
-  CameraPosition initialCameraPosition;
-  CameraPosition currentCameraPosition;
-  LatLng _cameraPosition=LatLng(0,0);
+  LatLng _cameraPosition;
   Location location;
-  LocationData initalLocationData;
-  bool _permission;
-  BitmapDescriptor pinLocationIcon;
-  BitmapDescriptor sourceIcon;
-  Set<Marker> markers = Set<Marker>();
+  String title;
 
-
+  selectedCameraPosition(LatLng curPos){
+    setState(() {
+      _cameraPosition=curPos;
+    });
+  }
 
   @override
   void initState() {
-    location = Location();
+   /* location = Location();
     location.onLocationChanged.listen((LocationData cLoc) async {
       currentLocation = cLoc;
-
       GoogleMapController controller = await _Controller.future;
       controller.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(
             target: LatLng(currentLocation.latitude, currentLocation.longitude),
             zoom: 17),
       ));
-    });
+    });*/
     super.initState();
   }
 
-
-
-  updateCurrentLocation() async {
-    GoogleMapController controller = await _Controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(
-          target: LatLng(currentLocation.latitude, currentLocation.longitude),
-          zoom: 17),
-    ));
-  }
 
   @override
   Widget build(BuildContext context) {
       return WillPopScope(
         onWillPop: () async {
-          Navigator.of(context).popUntil((route) => route.isFirst);
-          Timer(Duration(milliseconds: 200),(){
-            BlocProvider.of<DeliveryBookingBloc>(context).add(BackPressedEvent());
-          });
+         // Navigator.of(context).popUntil((route) => route.isFirst);
+       //   Timer(Duration(milliseconds: 200),(){BlocProvider.of<DeliveryBookingBloc>(context).add(BackPressedEvent());});
           // Navigator.popUntil(context, ModalRoute.withName('/AddDestinationScreen'));
-          //Navigator.pop(context);
+          Navigator.pop(context);
           return false;
         },
         child: BlocBuilder<DeliveryBookingBloc, DeliveryBookingState>(
           builder: (context,state){
+            if(state is DestinationNotSelectedState){
+              title="Add Destination";
+            //  _cameraPosition=LatLng(state.currentLocation.latitude,state.currentLocation.longitude);
+            }
+            if(state is PickupNotSelectedState){
+              title="Add Pickup ";
+           //   _cameraPosition=LatLng(state.currentLocation.latitude,state.currentLocation.longitude);
+            }
+
             return Scaffold(
                 appBar: AppBar(
-                  title: Text('ADD DESTINATION'),
+                  title: Text(title),
                 ),
                 body: Stack(
                   children: [
                     if(state is PickupNotSelectedState)
-                      GoogleMap(
-                          mapType: MapType.normal,
-                          initialCameraPosition: CameraPosition(
-                            target: LatLng(state.currentLocation.latitude, state.currentLocation.longitude),
-                            zoom: 16,
-                          ),
-                          zoomControlsEnabled: false,
-                          zoomGesturesEnabled: true,
-                          scrollGesturesEnabled: true,
-                          compassEnabled: true,
-                          rotateGesturesEnabled: true,
-                          tiltGesturesEnabled: true,
-                          myLocationEnabled: true,
-                          myLocationButtonEnabled: false,
-                          markers: markers,
-                          onCameraMove: ((_position) => _updatePosition(_position)),
-                          onMapCreated: (GoogleMapController controller) async {
-                            setState(() {
-                              mapController = controller;
-                            });
+                      AddPickDestinationMapWidget(initialLoc: state.currentLocation,selectedPosition:selectedCameraPosition ,),
 
-                          }),
                     if (state is DestinationNotSelectedState)
-                      GoogleMap(
-                          mapType: MapType.normal,
-                          initialCameraPosition: CameraPosition(
-                            target: LatLng(state.currentLocation.latitude, state.currentLocation.longitude),
-                            zoom: 16,
-                          ),
-                          zoomControlsEnabled: false,
-                          zoomGesturesEnabled: true,
-                          scrollGesturesEnabled: true,
-                          compassEnabled: true,
-                          rotateGesturesEnabled: true,
-                          tiltGesturesEnabled: true,
-                          //myLocationEnabled: true,
-                          myLocationButtonEnabled: false,
-                          markers: markers,
-                          onCameraMove: ((_position) => _updatePosition(_position)),
-                          onMapCreated: (GoogleMapController controller) async {
-                            setState(() {
-                              mapController = controller;
-                            });
-                            setMapPins(state.currentLocation);
-                            //_Controller.complete(controller);
-                            /*   await location.getLocation().then((LocationData initialLoc) async {
-                              LatLng latLng = LatLng(initialLoc.latitude, initialLoc.longitude);
-                              CameraUpdate cameraUpdate = CameraUpdate.newLatLngZoom(latLng, 16);
-                              final GoogleMapController controller=await  _Controller.future;
-                              controller.moveCamera(cameraUpdate);
-                            }); */
-                          }),
+                      AddPickDestinationMapWidget(initialLoc: state.currentLocation,selectedPosition:selectedCameraPosition),
 
                     Container(
                       margin: EdgeInsets.only(bottom: 0),
@@ -141,17 +85,21 @@ class _AddDestinationScreenState extends State<AddDestinationScreen> {
                           if(state is DestinationNotSelectedState){
                             BlocProvider.of<DeliveryBookingBloc>(context).add(DestinationSelectedEvent(
                               LatLng(_cameraPosition.latitude, _cameraPosition.longitude),));
-                            Navigator.pushNamed(context, PackageDetailRoute);
-
+                          //  Navigator.pushNamed(context, PackageDetailRoute);
+                            Navigator.pop(context);
+                          // Navigator.pushNamed(context, selectLocationRoute,arguments: ScreenArguments(LatLng(currentLocation.latitude,currentLocation.longitude)));
                           }
-
                           if(state is PickupNotSelectedState){
                             BlocProvider.of<DeliveryBookingBloc>(context).add(PickupLocationSelectedEvent(
-                              LatLng(_cameraPosition.latitude, _cameraPosition.longitude ),));
-                            Navigator.of(context).popUntil((route) => route.isFirst);
+                              startingLoc: LatLng(_cameraPosition.latitude, _cameraPosition.longitude )
+                              ));
+                         //   Navigator.of(context).popUntil((route) => route.isFirst);
+                            Navigator.pop(context);
+                            //Navigator.pushNamed(context, selectLocationRoute,arguments: ScreenArguments(LatLng(currentLocation.latitude,currentLocation.longitude)));
                           }
 
                         },
+
                         child: Align(
                           alignment: Alignment.bottomCenter,
                           child: Container(
@@ -175,50 +123,17 @@ class _AddDestinationScreenState extends State<AddDestinationScreen> {
       );
 
   }
-
-  void setMapPins(LatLng currentLoc) {
-    setState(() {
-      // source pin
-      markers.add(Marker(
-          markerId: MarkerId('marker_2'),
-          draggable: true,
-          position: currentLoc,
-          icon: sourceIcon)); // destination pin
-    });
-  }
-
-  void _updatePosition(CameraPosition _position) {
-
-
-
-    print(
-        'inside updatePosition ${_position.target.latitude} ${_position.target.longitude}');
-    Marker marker = markers.firstWhere((p) => p.markerId == MarkerId('marker_2'), orElse: () => null);
-
-    setState(() {
-      markers.remove(marker);
-      markers.add(
-        Marker(
-          markerId: MarkerId('marker_2'),
-          position:
-              LatLng(_position.target.latitude, _position.target.longitude),
-          draggable: true,
-          icon: pinLocationIcon,
-
-
-        ),
-      );
-    });
-    setState(() {
-     _cameraPosition=LatLng(_position.target.latitude,_position.target.longitude);
-
-    });
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    mapController.dispose();
-    super.dispose();
-  }
 }
+
+
+
+
+
+/*updateCurrentLocation() async {
+  GoogleMapController controller = await _Controller.future;
+  controller.animateCamera(CameraUpdate.newCameraPosition(
+    CameraPosition(
+        target: LatLng(currentLocation.latitude, currentLocation.longitude),
+        zoom: 17),
+  ));
+}*/

@@ -19,7 +19,7 @@ class TaxiBookingStateWidget extends StatelessWidget {
         String title = "";
 
         switch (currentState.runtimeType) {
-          case DeliveryVechileTypeNotSelectedState:
+          case  DeliveryVechileAndPaymentTypeNotSelectedState:
             selectedTab = 1;
             title = "Choose Delivery Vechile";
             break;
@@ -39,11 +39,16 @@ class TaxiBookingStateWidget extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.title.copyWith(
-                        color: Colors.white, fontWeight: FontWeight.normal),
+                  SizedBox(height: 10,),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Text(
+                      title,
+                      style: Theme.of(context).textTheme.title.copyWith(
+                          color: Colors.white, fontWeight: FontWeight.normal),
+                    ),
                   ),
+
                   IconButton(
                       icon: Icon(Icons.clear),
                       onPressed: () {
@@ -54,24 +59,7 @@ class TaxiBookingStateWidget extends StatelessWidget {
               SizedBox(
                 height: 12.0,
               ),
-              Row(children: [
-                buildTab(context, "1", selectedTab >= 1),
-                Expanded(
-                  child: DashedLine(
-                    color: Colors.white.withOpacity(0.3),
-                  ),
-                ),
-                buildTab(context, "2", selectedTab >= 2),
-                Expanded(
-                  child: DashedLine(
-                    color: Colors.white.withOpacity(0.3),
-                  ),
-                ),
-                buildTab(context, "3", selectedTab >= 3),
-              ]),
-              SizedBox(
-                height: 12.0,
-              )
+
             ],
           ),
         );

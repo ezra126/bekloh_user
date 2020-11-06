@@ -10,13 +10,24 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
   ImageProvider imageProvider;
+  AssetImage assetImage;
   @override
   void initState() {
     // TODO: implement initState
+
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+
+    super.didChangeDependencies();
   }
   @override
   Widget build(BuildContext context) {
+    assetImage = AssetImage('assets/mover.jpg');
+    precacheImage(assetImage, context);
     return WillPopScope(
       onWillPop: () async {
         await SystemNavigator.pop();
@@ -26,7 +37,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         body: Container(
           child: Stack(
             children: [
-              Container(
+             /* Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -44,6 +55,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   // image: AssetImage('assets/images/packing.jpg'),
                   // fit: BoxFit.fill,
                   //  ),
+                ),
+              ),*/
+              Container(
+                decoration: new BoxDecoration(
+                  image: new DecorationImage(image:  assetImage, fit: BoxFit.cover,),
                 ),
               ),
               Padding(

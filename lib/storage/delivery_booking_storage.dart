@@ -12,8 +12,13 @@ class DeliveryBookingStorage {
     return _deliveryBooking;
   }
 
-  static Future<DeliveryBooking> getDeliveryBooking() async {
+  //static Future<DeliveryBooking> getDeliveryBooking() async {
+  static DeliveryBooking getDeliveryBooking() {
     return _deliveryBooking;
+  }
+
+  static resetDeliveryBooking(){
+    return _deliveryBooking=null;
   }
 
    getDeliverySource(){

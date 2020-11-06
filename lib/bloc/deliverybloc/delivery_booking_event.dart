@@ -1,3 +1,4 @@
+import 'package:bekloh_user/model/delivery_service_type.dart';
 import 'package:bekloh_user/model/payment_type.dart';
 import 'package:bekloh_user/model/vechile_type.dart';
 import 'package:equatable/equatable.dart';
@@ -12,7 +13,18 @@ abstract class DeliveryBookingEvent extends Equatable {
 }
 
 
-class DeliveryBookingStartEvent extends DeliveryBookingEvent {}
+class DeliveryBookingStartEvent extends DeliveryBookingEvent {
+
+}
+
+class DeliveryServiceTypeSelectedEvent extends DeliveryBookingEvent{
+  final DeliveryServiceType serviceType;
+  DeliveryServiceTypeSelectedEvent({this.serviceType});
+
+  @override
+  List<Object> get props => [serviceType];
+
+}
 
 
 class DestinationNotSelectedEvent extends DeliveryBookingEvent {
@@ -43,20 +55,27 @@ class PickupLocationSelectedEvent extends DeliveryBookingEvent {
   //final LatLng startingLoc;
   final LatLng startingLoc;
 
-  PickupLocationSelectedEvent(this.startingLoc);
+
+  PickupLocationSelectedEvent({this.startingLoc});
   @override
   List<Object> get props => [startingLoc];
 }
 
 class DetailsSubmittedEvent extends DeliveryBookingEvent {
-
+  final DateTime scheduledTime;
+  final int labour;
+  DetailsSubmittedEvent({this.scheduledTime,this.labour});
+  @override
+  List<Object> get props => [scheduledTime,labour];
 }
 
-class DeliveryVechileSelectedEvent extends DeliveryBookingEvent{
+class DeliveryVechileAndPaymentSelectedEvent extends DeliveryBookingEvent{
    final VechileType vechileType;
-   DeliveryVechileSelectedEvent(this.vechileType);
+   final PaymentType paymentType;
+   final String bookImage;
+   DeliveryVechileAndPaymentSelectedEvent(this.vechileType,this.paymentType,this.bookImage);
    @override
-   List<Object> get props => [VechileType];
+   List<Object> get props => [VechileType,paymentType];
 }
 
 class SelectPaymentMethodEvent extends DeliveryBookingEvent {

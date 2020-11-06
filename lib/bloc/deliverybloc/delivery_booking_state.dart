@@ -1,4 +1,5 @@
 import 'package:bekloh_user/model/delivery_booking.dart';
+import 'package:bekloh_user/model/delivery_service_type.dart';
 import 'package:equatable/equatable.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -19,6 +20,14 @@ class DeliveryBookingNotInitializedState extends DeliveryBookingState {
 }
 class DeliveryBookingNotSelectedState extends DeliveryBookingState {
   DeliveryBookingNotSelectedState();
+}
+
+class DeliveryServiceTypeSelectedState extends DeliveryBookingState{
+  final DeliveryServiceType serviceType;
+  DeliveryServiceTypeSelectedState({this.serviceType});
+  @override
+  List<Object> get props => [serviceType];
+
 }
 
 class DestinationNotSelectedState extends DeliveryBookingState {
@@ -44,9 +53,9 @@ class DetailsNotFilledState extends DeliveryBookingState {
   List<Object> get props => [booking];
 }
 
-class DeliveryVechileTypeNotSelectedState extends DeliveryBookingState {
+class DeliveryVechileAndPaymentTypeNotSelectedState extends DeliveryBookingState {
   final DeliveryBooking booking;
-  DeliveryVechileTypeNotSelectedState({this.booking});
+  DeliveryVechileAndPaymentTypeNotSelectedState({this.booking});
   @override
   List<Object> get props => [booking];
 }
@@ -58,9 +67,21 @@ class PaymentMethodNotSelectedState extends DeliveryBookingState {
   List<Object> get props => [booking];
 }
 
+class DeliveryBookingNotConfirmedState extends DeliveryBookingState {
+  final DeliveryBooking booking;
+  DeliveryBookingNotConfirmedState({this.booking});
+  @override
+  List<Object> get props => [booking];
+}
+
+class WaitingForDriverState extends DeliveryBookingState{}
+
 class DeliveryBookingConfirmedState extends DeliveryBookingState {}
 
-class DeliveryBookingNotConfirmedState extends DeliveryBookingState {}
+
+
+
+
 
 class DeliveryBookingCancelledState extends DeliveryBookingState {}
 

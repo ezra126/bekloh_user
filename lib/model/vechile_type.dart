@@ -1,1 +1,1 @@
-enum VechileType { Standard, Premium, Platinum }
+enum VechileType { Pickup, BoxVan, Isuzu }
