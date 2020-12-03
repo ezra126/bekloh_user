@@ -74,11 +74,21 @@ class DeliveryBookingNotConfirmedState extends DeliveryBookingState {
   List<Object> get props => [booking];
 }
 
-class WaitingForDriverState extends DeliveryBookingState{}
-
 class DeliveryBookingConfirmedState extends DeliveryBookingState {}
 
+class SearchingForDriverState extends DeliveryBookingState{
+  final DeliveryBooking booking;
+  SearchingForDriverState({this.booking});
+  @override
+  List<Object> get props => [booking];
+}
 
+class DriverAcceptYourMoveOrDeliveryState extends DeliveryBookingState{
+  final DeliveryBooking booking;
+  DriverAcceptYourMoveOrDeliveryState({this.booking});
+  @override
+  List<Object> get props => [booking];
+}
 
 
 

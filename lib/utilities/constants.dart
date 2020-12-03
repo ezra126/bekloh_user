@@ -16,3 +16,4 @@ const String OrderViewRoute= '/OrderViewScreen';
 const String helpRoute= '/HelpScreen';
 const String notificationRoute='/NotificationScreen';
 const String searchDriverRoute='/SearchDriverScreen';
+const String driverOnServiceRoute='/DriverOnServiceScreen';

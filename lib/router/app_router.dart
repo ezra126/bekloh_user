@@ -3,6 +3,7 @@ import 'package:bekloh_user/screen/add_destination.dart';
 import 'package:bekloh_user/screen/choose_vechile_and_payment.dart';
 import 'package:bekloh_user/screen/confirm_service.dart';
 import 'package:bekloh_user/screen/delivery_item_detail.dart';
+import 'package:bekloh_user/screen/driver_on_service_screen.dart';
 import 'package:bekloh_user/screen/help_screen.dart';
 import 'package:bekloh_user/screen/home_screen.dart';
 import 'package:bekloh_user/screen/login_screen.dart';
@@ -66,6 +67,11 @@ class Router {
       case searchDriverRoute:
         return MaterialPageRoute(
           builder: (_) => SearchDriverScreen(),);
+      case driverOnServiceRoute:
+        return MaterialPageRoute(
+          builder: (_) => DriverOnServiceScreen(),);
+
+
 
       default:
         return MaterialPageRoute(

@@ -40,7 +40,7 @@ class _ChooseVechileWidgetState extends State<ChooseVechileWidget>
     deliveryBooking = (BlocProvider.of<DeliveryBookingBloc>(context).state as  DeliveryVechileAndPaymentTypeNotSelectedState).booking;
     selectedVechileType = deliveryBooking.vechileType;
     if (selectedVechileType == null) {
-      selectedVechileType = VechileType.Isuzu;
+       //selectedVechileType = VechileType.Isuzu;
     }
    
     super.initState();

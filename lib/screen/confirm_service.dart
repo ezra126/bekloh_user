@@ -9,13 +9,20 @@ import 'package:bekloh_user/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:bekloh_user/bloc/navigationbloc/navigation_bloc.dart';
 
 class ConfirmServiceScreen extends StatefulWidget {
   @override
   _ConfirmServiceScreenState createState() => _ConfirmServiceScreenState();
 }
 
+
 class _ConfirmServiceScreenState extends State<ConfirmServiceScreen> {
+  var booking;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -29,9 +36,17 @@ class _ConfirmServiceScreenState extends State<ConfirmServiceScreen> {
         appBar: AppBar(
           title: Text('Confirm Booking'),
         ),
-        body:BlocBuilder<DeliveryBookingBloc,DeliveryBookingState>(
+        body:BlocConsumer<DeliveryBookingBloc,DeliveryBookingState>(
+          listener: (context,DeliveryBookingState state){
+            if(state is SearchingForDriverState){
+               Navigator.pushNamed(context, searchDriverRoute);
+            }
+
+          },
           builder: (context,DeliveryBookingState state){
             if(state is DeliveryBookingNotConfirmedState){
+              booking=state.booking;
+            }
               return Container(
                   height: MediaQuery.of(context).size.height,
                 color:  Color(0xffe8edf1),
@@ -52,7 +67,7 @@ class _ConfirmServiceScreenState extends State<ConfirmServiceScreen> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text('Booking Date',style: TextStyle(fontWeight: FontWeight.bold),),
-                                    Text(DateFormat.yMMMMd().format(state.booking.bookingTime)),
+                                    Text(DateFormat.yMMMMd().format(booking.bookingTime)),
                                   ],
                                 )),
                             Padding(
@@ -61,7 +76,7 @@ class _ConfirmServiceScreenState extends State<ConfirmServiceScreen> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text('Booking Time',style: TextStyle(fontWeight: FontWeight.bold),),
-                                    Text(DateFormat('K:mm a').format(state.booking.bookingTime)),
+                                    Text(DateFormat('K:mm a').format(booking.bookingTime)),
                                   ],
                                 )),
                             Container(
@@ -119,7 +134,7 @@ class _ConfirmServiceScreenState extends State<ConfirmServiceScreen> {
                                 decoration: BoxDecoration(color: Colors.blueGrey[50]),
                                 height: 180,
                                 width: MediaQuery.of(context).size.width,
-                                child:  Image.memory(Uint8List.fromList(state.booking.bookImage.codeUnits),fit: BoxFit.fill,),
+                                child:  Image.memory(Uint8List.fromList(booking.bookImage.codeUnits),fit: BoxFit.fill,),
                               ),
                             ),
                           ],
@@ -153,10 +168,7 @@ class _ConfirmServiceScreenState extends State<ConfirmServiceScreen> {
                 )
               );
             }
-            return Container(
-              child: Center(child: Text(BlocProvider.of<DeliveryBookingBloc>(context).state.toString()),),
-            );
-          },
+          //  return Container(child: Center(child: Text(BlocProvider.of<DeliveryBookingBloc>(context).state.toString()),),);},
         ),
       ),
     );
@@ -164,7 +176,7 @@ class _ConfirmServiceScreenState extends State<ConfirmServiceScreen> {
 
   void addOrder(){
     var state = BlocProvider.of<DeliveryBookingBloc>(context).state;
-    if(state  is DeliveryBookingNotConfirmedState){
+    if(state is DeliveryBookingNotConfirmedState){
       Order order=new Order();
       order.source=state.booking.source.toString();
       order.destination=state.booking.destination.toString();
@@ -174,7 +186,7 @@ class _ConfirmServiceScreenState extends State<ConfirmServiceScreen> {
       order.bookImage= state.booking.bookImage;
       order.deliveryServiceType=state.booking.deliveryServiceType.toString().toString().replaceFirst("DeliveryServiceType.", "");
 
-     // context.repository<OrderRepository>().insert(order);
+      // context.repository<OrderRepository>().insert(order);
      // Navigator.of(context).popUntil((route) => route.isFirst);
    //  context.repository<OrderRepository>().deleteAllTrip();
        int pickedTime=(state.booking.bookingTime.hour*60)+ state.booking.bookingTime.minute;
@@ -185,10 +197,51 @@ class _ConfirmServiceScreenState extends State<ConfirmServiceScreen> {
        print(dif<28);
 
        if(dif<28){
-         Navigator.pushNamed(context, searchDriverRoute);
+         BlocProvider.of<DeliveryBookingBloc>(context).add(UserConfirmMoveOrDeliveryEvent(deliverOrMoveNow: true));
+        // Navigator.pushNamed(context, searchDriverRoute);
        }
-      else
-        Navigator.of(context).popUntil((route) => route.isFirst);
+      else{
+         BlocProvider.of<DeliveryBookingBloc>(context).add(UserConfirmMoveOrDeliveryEvent(deliverOrMoveNow: false));
+         showAlertDialog(context);
+       }
+
+
+       // Navigator.of(context).popUntil((route) => route.isFirst);
     }
+  }
+
+  showAlertDialog(BuildContext context) {
+
+    // set up the button
+    Widget cancelButton = FlatButton(
+      child: Text("Ok"),
+      onPressed: () {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      },
+    );
+    Widget viewBookingButton = FlatButton(
+      child: Text("View Booking"),
+      onPressed: () {
+        BlocProvider.of<NavigationBloc>(context).makeIndexToMyOrder();
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      content: Text("Your booking Service is scheduled"),
+      actions: [
+        cancelButton,
+        viewBookingButton
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

@@ -49,6 +49,7 @@ class _ChooseVechileAndPaymentScreenState extends State<ChooseVechileAndPaymentS
   GoogleMapController mapController;
   List<PaymentType> paymentTypeList = [PaymentType.Cash, PaymentType.Wallet];
   CameraUpdate u2;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -95,6 +96,7 @@ class _ChooseVechileAndPaymentScreenState extends State<ChooseVechileAndPaymentS
         }
         return SafeArea(
           child: Scaffold(
+            key: _scaffoldKey,
             body: Stack(
               children: [
                 Container(
@@ -213,8 +215,8 @@ class _ChooseVechileAndPaymentScreenState extends State<ChooseVechileAndPaymentS
                     return Column(
                       children: [
                         TaxiBookingStateWidget(),
-                        if (state
-                            is DeliveryVechileAndPaymentTypeNotSelectedState)
+                        SizedBox(height: 10,),
+                        if (state is DeliveryVechileAndPaymentTypeNotSelectedState)
                           Expanded(
                               child: Container(
                                   color: Colors.white,
@@ -322,8 +324,14 @@ class _ChooseVechileAndPaymentScreenState extends State<ChooseVechileAndPaymentS
                                     ),
                                     onPressed: () {
                                       String googleImage = new String.fromCharCodes(googlemapImage);
-                                      BlocProvider.of<DeliveryBookingBloc>(context).add(DeliveryVechileAndPaymentSelectedEvent(_vechileType, _paymentType,googleImage));
-                                      Navigator.pushNamed(context, confirmServiceRoute);
+                                      if(_vechileType!=null){
+                                        BlocProvider.of<DeliveryBookingBloc>(context).add(DeliveryVechileAndPaymentSelectedEvent(_vechileType, _paymentType,googleImage));
+                                        Navigator.pushNamed(context, confirmServiceRoute);
+                                      }
+                                      else{
+                                        showAlertDialog(_scaffoldKey.currentContext);
+                                      }
+
                                     },
                                   ),
                                 ),
@@ -394,6 +402,35 @@ class _ChooseVechileAndPaymentScreenState extends State<ChooseVechileAndPaymentS
           ),
         );
       }),
+    );
+  }
+
+  showAlertDialog(BuildContext context) {
+
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        print('ggggggggggggggddddddddddddddddddddddssssssssssssssssssss');
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(""),
+      content: Text('please select vechile type!!!'),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 

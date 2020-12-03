@@ -78,6 +78,17 @@ class DeliveryVechileAndPaymentSelectedEvent extends DeliveryBookingEvent{
    List<Object> get props => [VechileType,paymentType];
 }
 
+class UserConfirmMoveOrDeliveryEvent extends DeliveryBookingEvent{
+  final bool deliverOrMoveNow;
+  UserConfirmMoveOrDeliveryEvent({this.deliverOrMoveNow});
+  @override
+  List<Object> get props => [];
+}
+
+class DriverAcceptYourDeliveryOrMoveEvent extends DeliveryBookingEvent{
+
+}
+
 class SelectPaymentMethodEvent extends DeliveryBookingEvent {
   final PaymentType paymentType;
   SelectPaymentMethodEvent(this.paymentType);

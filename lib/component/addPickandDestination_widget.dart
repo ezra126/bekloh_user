@@ -5,11 +5,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class AddPickDestinationMapWidget extends StatefulWidget {
   final LatLng initialLoc;
   final Function selectedPosition;
-  const AddPickDestinationMapWidget({Key key, this.initialLoc,this.selectedPosition}) : super(key: key);
+  final Function fetchName;
+  const AddPickDestinationMapWidget({Key key, this.initialLoc,this.selectedPosition,this.fetchName}) : super(key: key);
   @override
-  _AddPickDestinationMapWidgetState createState() => _AddPickDestinationMapWidgetState();
+  AddPickDestinationMapWidgetState createState() => AddPickDestinationMapWidgetState();
 }
-class _AddPickDestinationMapWidgetState extends State<AddPickDestinationMapWidget> {
+class AddPickDestinationMapWidgetState extends State<AddPickDestinationMapWidget> {
   GoogleMapController googleMapController;
   Set<Marker> markers = Set<Marker>();
   LatLng _cameraPosition;
@@ -17,7 +18,7 @@ class _AddPickDestinationMapWidgetState extends State<AddPickDestinationMapWidge
   BitmapDescriptor sourceIcon;
   @override
   Widget build(BuildContext context) {
-    return  GoogleMap(
+    return GoogleMap(
         mapType: MapType.normal,
         initialCameraPosition: CameraPosition(
           target: widget.initialLoc,
@@ -31,6 +32,7 @@ class _AddPickDestinationMapWidgetState extends State<AddPickDestinationMapWidge
         tiltGesturesEnabled: true,
         myLocationButtonEnabled: false,
         markers: markers,
+       // onCameraIdle: fetchLocationName,
         onCameraMove: ((_position) => _updatePosition(_position)),
         onMapCreated: (GoogleMapController controller) async {
           setState(() {
@@ -47,9 +49,12 @@ class _AddPickDestinationMapWidgetState extends State<AddPickDestinationMapWidge
         });
   }
 
+  void fetchLocationName(){
+    widget.fetchName(true);
+  }
+
   void _updatePosition(CameraPosition _position) {
-    print(
-        'inside updatePosition ${_position.target.latitude} ${_position.target.longitude}');
+    print('inside updatePosition ${_position.target.latitude} ${_position.target.longitude}');
     Marker marker = markers.firstWhere((p) => p.markerId == MarkerId('marker_2'), orElse: () => null);
 
     setState(() {
@@ -57,8 +62,7 @@ class _AddPickDestinationMapWidgetState extends State<AddPickDestinationMapWidge
       markers.add(
         Marker(
           markerId: MarkerId('marker_2'),
-          position:
-          LatLng(_position.target.latitude, _position.target.longitude),
+          position: LatLng(_position.target.latitude, _position.target.longitude),
           draggable: true,
           icon: pinLocationIcon,
 
@@ -67,6 +71,9 @@ class _AddPickDestinationMapWidgetState extends State<AddPickDestinationMapWidge
       );
     });
     setState(() {
+    /*  if(_position==null){
+        _cameraPosition=LatLng(widget.initialLoc.latitude,widget.initialLoc.longitude);
+      }*/
       _cameraPosition=LatLng(_position.target.latitude,_position.target.longitude);
       widget.selectedPosition(_cameraPosition);
     });

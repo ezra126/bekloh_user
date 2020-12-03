@@ -20,6 +20,7 @@ import 'package:bekloh_user/component/delivery_map.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:location/location.dart';
 import 'package:uuid/uuid.dart';
+import 'package:bekloh_user/bloc/navigationbloc/navigation_bloc.dart';
 
 
 
@@ -47,10 +48,9 @@ class SelectLocationScreenState extends State<SelectLocationScreen> with TickerP
   @override
   void initState() {
     super.initState();
-    setState(() {
-      showDestinationNotExist=false;
-      showSourceNotExist=false;
-    });
+    showDestinationNotExist=false;
+    showSourceNotExist=false;
+
     rootBundle.loadString('assets/themes/map/night.json').then((string) {
       _mapStyle = string;
     });
@@ -60,10 +60,10 @@ class SelectLocationScreenState extends State<SelectLocationScreen> with TickerP
     location = Location();
 
     //BlocProvider.of<DeliveryBookingBloc>(context).add(DeliveryBookingStartEvent());
-    location.onLocationChanged.listen((LocationData cLoc) {
+      location.onLocationChanged.listen((LocationData cLoc) {
       currentLocation = cLoc;
       currentPosition = LatLng(currentLocation.latitude, currentLocation.longitude);
-      if(currentPosition!=null){
+      if(currentLocation!=null){
          animateToCurrent();
       }
      // if (currentPosition != null) {BlocProvider.of<MapBloc>(context).mapLoaded();}
@@ -79,9 +79,9 @@ class SelectLocationScreenState extends State<SelectLocationScreen> with TickerP
   void didChangeDependencies(){
 
     super.didChangeDependencies();
-    Timer(Duration(seconds: 2),(){
+  /*  Timer(Duration(seconds: 2),(){
      // BlocProvider.of<MapBloc>(context).mapLoaded();
-    });
+    });*/
 
   }
 
@@ -116,7 +116,7 @@ class SelectLocationScreenState extends State<SelectLocationScreen> with TickerP
                            builder: (context,DeliveryBookingState state){
                              return GoogleMap(
                                  mapType: MapType.normal,
-                                 initialCameraPosition: widget.currLoc==LatLng(0,0) ? CameraPosition(
+                                 initialCameraPosition: widget.currLoc== LatLng(0,0) ? CameraPosition(
                                    target: LatLng(37,9),
                                    zoom: 2,
                                  ): CameraPosition(
@@ -248,13 +248,11 @@ class SelectLocationScreenState extends State<SelectLocationScreen> with TickerP
                                          SizedBox(height: 6,),
                                          InkWell(
                                            onTap: (){
-                                             BlocProvider.of<DeliveryBookingBloc>(context).add(
-                                                 PickupNotSelectedEvent(LatLng(currentLocation.latitude,currentLocation.longitude)));
-                                             final sessionToken = Uuid().v4();
-                                             showSearch(
-                                               context: context,
-                                               delegate: AddressSearch(sessionToken),
-                                             );
+                                           BlocProvider.of<DeliveryBookingBloc>(context).add(PickupNotSelectedEvent(LatLng(currentLocation.latitude,currentLocation.longitude)));
+                                            final sessionToken = Uuid().v4();
+                                            showSearch(context: context, delegate: AddressSearch(sessionToken),);
+
+                                            // Navigator.of(context).popUntil((route) => route.isFirst);
                                            },
                                            child: Container(
                                              height: 30.0,

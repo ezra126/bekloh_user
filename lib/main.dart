@@ -18,6 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'bloc/map_bloc.dart';
+import 'bloc/navigationbloc/navigation_bloc.dart';
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +42,7 @@ Future<void> main() async{
           LoginBloc(userRepository: _userRepository),
     ),
     BlocProvider<MapBloc>(create: (BuildContext context) => MapBloc()),
+    BlocProvider<NavigationBloc>(create: (BuildContext context) => NavigationBloc()),
   ], child:  MultiRepositoryProvider(
       providers: [
         RepositoryProvider<OrderRepository>(

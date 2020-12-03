@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bekloh_user/model/delivery_booking.dart';
 import 'package:bekloh_user/model/delivery_service_type.dart';
 import 'package:bekloh_user/storage/delivery_booking_storage.dart';
@@ -5,12 +7,13 @@ import 'package:bloc/bloc.dart';
 import 'package:bekloh_user/bloc/deliverybloc/delivery_booking_event.dart';
 import 'package:bekloh_user/bloc/deliverybloc/delivery_booking_state.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 
-import  "dart:convert";
+
 
 class DeliveryBookingBloc extends Bloc<DeliveryBookingEvent, DeliveryBookingState> {
   DeliveryBookingBloc() : super(DeliveryBookingNotInitializedState());
-
+  StreamSubscription _streamSubscription;
 
   @override
   Stream<DeliveryBookingState> mapEventToState(DeliveryBookingEvent event) async* {
@@ -66,16 +69,35 @@ class DeliveryBookingBloc extends Bloc<DeliveryBookingEvent, DeliveryBookingStat
     if(event is DetailsSubmittedEvent){
       DeliveryBooking deliveryBooking;
       deliveryBooking =await DeliveryBookingStorage.addDetails(DeliveryBooking.named(bookingTime: event.scheduledTime,numberOfLabour: event.labour));
-      deliveryBooking= await DeliveryBookingStorage.getDeliveryBooking();
+      deliveryBooking= DeliveryBookingStorage.getDeliveryBooking();
       yield DeliveryVechileAndPaymentTypeNotSelectedState(booking: deliveryBooking);
     }
     if(event is DeliveryVechileAndPaymentSelectedEvent){
       DeliveryBooking deliveryBooking;
-      print('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
       deliveryBooking=await DeliveryBookingStorage.
       addDetails(DeliveryBooking.named(vechileType: event.vechileType,paymentType: event.paymentType,bookImage: event.bookImage));
       yield DeliveryBookingNotConfirmedState(booking: deliveryBooking);
     }
+
+   if (event is UserConfirmMoveOrDeliveryEvent){
+     DeliveryBooking deliveryBooking =DeliveryBookingStorage.getDeliveryBooking();
+    //  yield DeliveryBookingConfirmedState();
+     if(event.deliverOrMoveNow==true){
+       yield SearchingForDriverState(booking: deliveryBooking);
+     //  _streamSubscription= searchForDriver().listen((event) {add(event);});
+     }
+     else{
+       yield DeliveryBookingConfirmedState();
+     }
+   }
+
+   if(event is DriverAcceptYourDeliveryOrMoveEvent){
+     DeliveryBooking deliveryBooking;
+     deliveryBooking= DeliveryBookingStorage.getDeliveryBooking();
+     yield DriverAcceptYourMoveOrDeliveryState(booking: deliveryBooking);
+   }
+
+
     if(event is SelectPaymentMethodEvent){
       DeliveryBooking deliveryBooking;
       deliveryBooking=await DeliveryBookingStorage.addDetails(DeliveryBooking.named(paymentType: event.paymentType));
@@ -96,12 +118,12 @@ class DeliveryBookingBloc extends Bloc<DeliveryBookingEvent, DeliveryBookingStat
           break;
         case DeliveryBookingNotConfirmedState:
           DeliveryBooking deliveryBooking;
-          deliveryBooking= await DeliveryBookingStorage.getDeliveryBooking();
+          deliveryBooking=  DeliveryBookingStorage.getDeliveryBooking();
           yield DeliveryVechileAndPaymentTypeNotSelectedState(booking: deliveryBooking);
           break;
         case PaymentMethodNotSelectedState:
           DeliveryBooking deliveryBooking;
-          deliveryBooking= await DeliveryBookingStorage.getDeliveryBooking();
+          deliveryBooking= DeliveryBookingStorage.getDeliveryBooking();
           //print(deliveryBooking.source.longitude);
           yield  DeliveryVechileAndPaymentTypeNotSelectedState(booking: deliveryBooking);
           break;
@@ -109,11 +131,21 @@ class DeliveryBookingBloc extends Bloc<DeliveryBookingEvent, DeliveryBookingStat
           yield DeliveryBookingNotInitializedState();
           break;
       }
-
-
     }
 
   }
+
+  /*Stream<DeliveryBookingEvent> searchForDriver() async*{
+    StreamController<DeliveryBookingEvent> eventStream = StreamController();
+      Timer(Duration(seconds: 10),(){
+        eventStream.add(DriverAcceptYourDeliveryOrMoveEvent());
+        eventStream.close();
+      });
+
+
+
+    yield* eventStream.stream;
+  }*/
 
 }
 

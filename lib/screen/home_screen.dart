@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:bekloh_user/bloc/navigationbloc/navigation_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -23,7 +24,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex =0;
   static const TextStyle optionStyle =
   TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: Colors.black);
   AssetImage apartment;
@@ -40,40 +41,69 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedIndex = index;
     });
+    if(index==0){BlocProvider.of<NavigationBloc>(context).makeIndexToHome();}
+    if(index==1){BlocProvider.of<NavigationBloc>(context).makeIndexToMyOrder();}
+    if(index==3){BlocProvider.of<NavigationBloc>(context).makeIndexToAccount();}
   }
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+  }
+
+
 
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _widgetOptions.elementAt(_selectedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Home')
+    return BlocConsumer<NavigationBloc,int>(
+      listener: (context,int index){
+        if(index==1){
+          WidgetsBinding.instance.addPostFrameCallback((_){
+            print('ggggggggggggggggggggggggggggggggggggggggggggggg');
+            setState(() {
+              _selectedIndex=1;
+            });
+          });
+        }
+      },
+      builder: (context,int index){
+       return Scaffold(
+          body: _widgetOptions.elementAt(_selectedIndex),
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  title: Text('Request')
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.format_list_bulleted),
+                  title: Text('My order')
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.notifications),
+                  title: Text('Notification')
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                title: Text('Account'),
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.amber[800],
+            unselectedItemColor: Colors.black45,
+            // selectedLabelStyle: TextStyle(color:Colors.amber[800] ),
+            // unselectedLabelStyle: TextStyle(color:Colors.blue),
+            onTap: _onItemTapped,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.format_list_bulleted),
-            title: Text('My order')
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            title: Text('Notification')
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              title: Text('Account'),
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        unselectedItemColor: Colors.black45,
-       // selectedLabelStyle: TextStyle(color:Colors.amber[800] ),
-       // unselectedLabelStyle: TextStyle(color:Colors.blue),
-        onTap: _onItemTapped,
-      ),
+        );
+      },
     );
   }
 
@@ -108,6 +138,10 @@ class _ServiceSelectorState extends State<ServiceSelector> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            Container(
+                margin: EdgeInsets.only(left: 0,top: 20),
+                child: Text('Hi Israel',style: TextStyle(fontWeight: FontWeight.w300,fontSize: 20),)),
+            Text('What do you want to move/Delivery?',style: TextStyle(fontWeight: FontWeight.w400,fontSize: 17)),
             InkWell(
               onTap: (){
               //  BlocProvider.of<DeliveryBookingBloc>(context).add(DeliveryServiceTypeSelectedEvent(serviceType: DeliveryServiceType.SmallMove));
